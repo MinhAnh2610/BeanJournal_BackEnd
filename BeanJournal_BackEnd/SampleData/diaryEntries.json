@@ -1,0 +1,29 @@
+[
+  {
+    "EntryId": 1,
+    "UserId": "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
+    "Title": "A Day at the Park",
+    "Content": "Went to the park today, it was sunny and relaxing.",
+    "Mood": "Happy",
+    "CreatedAt": "2024-08-10T09:15:00",
+    "UpdatedAt": "2024-08-10T09:15:00"
+  },
+  {
+    "EntryId": 2,
+    "UserId": "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
+    "Title": "Reflective Evening",
+    "Content": "Spent some time thinking about life, feeling a bit melancholy.",
+    "Mood": "Reflective",
+    "CreatedAt": "2024-08-11T20:30:00",
+    "UpdatedAt": "2024-08-11T20:30:00"
+  },
+  {
+    "EntryId": 3,
+    "UserId": "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
+    "Title": "Productive Morning",
+    "Content": "Had a great start today, finished a lot of tasks and feeling accomplished.",
+    "Mood": "Energetic",
+    "CreatedAt": "2024-08-12T07:45:00",
+    "UpdatedAt": "2024-08-12T07:45:00"
+  }
+]

@@ -1,0 +1,36 @@
+[
+  {
+    "Id": "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D",
+    "UserName": "soybean",
+    "NormalizedUserName": "SOYBEAN",
+    "Email": "soybean@example.com",
+    "NormalizedEmail": "SOYBEAN@EXAMPLE.COM",
+    "EmailConfirmed": true,
+    "PasswordHash": "AQAAAAEAACcQAAAAEMu+LydDLTTvQci/f5hBc1WTMehHnsIXNl/3lwWChO/4WkXxQpA==",
+    "SecurityStamp": "29a0e19c-6e5a-4d7b-b474-015d2461ef76",
+    "ConcurrencyStamp": "7c9f577f-8a87-4c15-9306-b51848c2ac3b",
+    "PhoneNumber": null,
+    "PhoneNumberConfirmed": false,
+    "TwoFactorEnabled": false,
+    "LockoutEnd": null,
+    "LockoutEnabled": false,
+    "AccessFailedCount": 0
+  },
+  {
+    "Id": "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
+    "UserName": "greenbean",
+    "NormalizedUserName": "GREENBEAN",
+    "Email": "greenbean@example.com",
+    "NormalizedEmail": "GREENBEAN@EXAMPLE.COM",
+    "EmailConfirmed": true,
+    "PasswordHash": "AQAAAAEAACcQAAAAED7fJ3s5wEK9jFVlE+Se3dDwH8jZV6cR9yL5B5g3rY4Vpxfd5vQg==",
+    "SecurityStamp": "74b0d82f-2ef7-4c9b-92cb-8a4e94db1f3d",
+    "ConcurrencyStamp": "d81e6a9a-d634-4460-a5fb-c9d6605c0338",
+    "PhoneNumber": null,
+    "PhoneNumberConfirmed": false,
+    "TwoFactorEnabled": false,
+    "LockoutEnd": null,
+    "LockoutEnabled": false,
+    "AccessFailedCount": 0
+  }
+]

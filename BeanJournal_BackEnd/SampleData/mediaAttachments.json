@@ -1,0 +1,16 @@
+[
+  {
+    "MediaId": 1,
+    "EntryId": 1,
+    "FilePath": "/media/park-photo.jpg",
+    "FileType": "image/jpeg",
+    "CreatedAt": "2024-08-10T09:20:00"
+  },
+  {
+    "MediaId": 2,
+    "EntryId": 2,
+    "FilePath": "/media/thoughts-audio.mp3",
+    "FileType": "audio/mpeg",
+    "CreatedAt": "2024-08-11T20:45:00"
+  }
+]

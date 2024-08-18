@@ -12,7 +12,7 @@ namespace Entities
   public class DiaryEntry
   {
     [Key]
-    public int DiaryEntryId { get; set; }
+    public int EntryId { get; set; }
     public string UserId { get; set; } = string.Empty;
     [ForeignKey("UserId")]
     public User? User { get; set; }

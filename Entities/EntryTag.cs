@@ -11,8 +11,6 @@ namespace Entities
   [Table("EntryTags")]
   public class EntryTag
   {
-    [Key]
-    public int EntryTagId { get; set; }
     public int EntryId { get; set; }
     [ForeignKey("EntryId")]
     public DiaryEntry? Entry { get; set; }

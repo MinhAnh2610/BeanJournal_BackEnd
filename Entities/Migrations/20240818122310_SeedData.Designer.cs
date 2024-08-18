@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240818122310_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,38 +62,6 @@ namespace Entities.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("DiaryEntries");
-
-                    b.HasData(
-                        new
-                        {
-                            EntryId = 1,
-                            Content = "Went to the park today, it was sunny and relaxing.",
-                            CreatedAt = new DateTime(2024, 8, 10, 9, 15, 0, 0, DateTimeKind.Unspecified),
-                            Mood = "Happy",
-                            Title = "A Day at the Park",
-                            UpdatedAt = new DateTime(2024, 8, 10, 9, 15, 0, 0, DateTimeKind.Unspecified),
-                            UserId = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC"
-                        },
-                        new
-                        {
-                            EntryId = 2,
-                            Content = "Spent some time thinking about life, feeling a bit melancholy.",
-                            CreatedAt = new DateTime(2024, 8, 11, 20, 30, 0, 0, DateTimeKind.Unspecified),
-                            Mood = "Reflective",
-                            Title = "Reflective Evening",
-                            UpdatedAt = new DateTime(2024, 8, 11, 20, 30, 0, 0, DateTimeKind.Unspecified),
-                            UserId = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC"
-                        },
-                        new
-                        {
-                            EntryId = 3,
-                            Content = "Had a great start today, finished a lot of tasks and feeling accomplished.",
-                            CreatedAt = new DateTime(2024, 8, 12, 7, 45, 0, 0, DateTimeKind.Unspecified),
-                            Mood = "Energetic",
-                            Title = "Productive Morning",
-                            UpdatedAt = new DateTime(2024, 8, 12, 7, 45, 0, 0, DateTimeKind.Unspecified),
-                            UserId = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC"
-                        });
                 });
 
             modelBuilder.Entity("Entities.EntryTag", b =>
@@ -106,23 +77,6 @@ namespace Entities.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("EntryTags");
-
-                    b.HasData(
-                        new
-                        {
-                            EntryId = 1,
-                            TagId = 1
-                        },
-                        new
-                        {
-                            EntryId = 2,
-                            TagId = 2
-                        },
-                        new
-                        {
-                            EntryId = 3,
-                            TagId = 3
-                        });
                 });
 
             modelBuilder.Entity("Entities.MediaAttachment", b =>
@@ -154,24 +108,6 @@ namespace Entities.Migrations
                     b.HasIndex("EntryId");
 
                     b.ToTable("MediaAttachments");
-
-                    b.HasData(
-                        new
-                        {
-                            MediaId = 1,
-                            CreatedAt = new DateTime(2024, 8, 10, 9, 20, 0, 0, DateTimeKind.Unspecified),
-                            EntryId = 1,
-                            FilePath = "/media/park-photo.jpg",
-                            FileType = "image/jpeg"
-                        },
-                        new
-                        {
-                            MediaId = 2,
-                            CreatedAt = new DateTime(2024, 8, 11, 20, 45, 0, 0, DateTimeKind.Unspecified),
-                            EntryId = 2,
-                            FilePath = "/media/thoughts-audio.mp3",
-                            FileType = "audio/mpeg"
-                        });
                 });
 
             modelBuilder.Entity("Entities.Tag", b =>
@@ -190,23 +126,6 @@ namespace Entities.Migrations
                     b.HasKey("TagId");
 
                     b.ToTable("Tags");
-
-                    b.HasData(
-                        new
-                        {
-                            TagId = 1,
-                            Name = "Nature"
-                        },
-                        new
-                        {
-                            TagId = 2,
-                            Name = "Reflection"
-                        },
-                        new
-                        {
-                            TagId = 3,
-                            Name = "Productivity"
-                        });
                 });
 
             modelBuilder.Entity("Entities.User", b =>
@@ -275,42 +194,6 @@ namespace Entities.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "7c9f577f-8a87-4c15-9306-b51848c2ac3b",
-                            CreatedAt = new DateTime(2024, 8, 18, 19, 24, 42, 36, DateTimeKind.Local).AddTicks(723),
-                            Email = "soybean@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "SOYBEAN@EXAMPLE.COM",
-                            NormalizedUserName = "SOYBEAN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMu+LydDLTTvQci/f5hBc1WTMehHnsIXNl/3lwWChO/4WkXxQpA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "29a0e19c-6e5a-4d7b-b474-015d2461ef76",
-                            TwoFactorEnabled = false,
-                            UserName = "soybean"
-                        },
-                        new
-                        {
-                            Id = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "d81e6a9a-d634-4460-a5fb-c9d6605c0338",
-                            CreatedAt = new DateTime(2024, 8, 18, 19, 24, 42, 36, DateTimeKind.Local).AddTicks(1121),
-                            Email = "greenbean@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "GREENBEAN@EXAMPLE.COM",
-                            NormalizedUserName = "GREENBEAN",
-                            PasswordHash = "AQAAAAEAACcQAAAAED7fJ3s5wEK9jFVlE+Se3dDwH8jZV6cR9yL5B5g3rY4Vpxfd5vQg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "74b0d82f-2ef7-4c9b-92cb-8a4e94db1f3d",
-                            TwoFactorEnabled = false,
-                            UserName = "greenbean"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -321,11 +204,6 @@ namespace Entities.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
@@ -343,10 +221,6 @@ namespace Entities.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasDiscriminator().HasValue("IdentityRole");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -434,18 +308,6 @@ namespace Entities.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D",
-                            RoleId = "F6F6F8BD-F92A-43EF-A8D9-CCC665D5021F"
-                        },
-                        new
-                        {
-                            UserId = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
-                            RoleId = "0508330E-790A-497C-A84A-5DE5E0D8367B"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -465,29 +327,6 @@ namespace Entities.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Entities.Role", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
-
-                    b.HasDiscriminator().HasValue("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "F6F6F8BD-F92A-43EF-A8D9-CCC665D5021F",
-                            ConcurrencyStamp = "a3e9f59f-15dc-4b9f-bc4e-06a39e5a9c6a",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "0508330E-790A-497C-A84A-5DE5E0D8367B",
-                            ConcurrencyStamp = "84cc659b-8d62-4299-8473-4c905a79bb0d",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("Entities.DiaryEntry", b =>
