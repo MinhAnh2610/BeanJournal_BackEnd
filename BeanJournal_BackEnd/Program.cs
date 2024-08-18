@@ -1,4 +1,6 @@
 using Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using RepositoryContracts;
@@ -19,6 +21,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// Add Identity 
+builder.Services.AddIdentity<User, Role>(options =>
+{
+  options.Password.RequiredLength = 5;
+  options.Password.RequireNonAlphanumeric = true;
+  options.Password.RequireUppercase = true;
+  options.Password.RequireLowercase = true;
+  options.Password.RequireDigit = true;
+  options.Password.RequiredUniqueChars = 1;
+})
+  .AddEntityFrameworkStores<ApplicationDbContext>()
+  .AddDefaultTokenProviders()
+  .AddUserStore<UserStore<User, Role, ApplicationDbContext>>()
+  .AddRoleStore<RoleStore<Role, ApplicationDbContext>>();
 
 // Add Scoped to Inversion of Control (IoC container) for Services
 builder.Services.AddScoped<IDiaryEntryService, DiaryEntryService>();
@@ -45,6 +62,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseCors();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
