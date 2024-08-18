@@ -1,5 +1,7 @@
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Repositories;
+using RepositoryContracts;
 using ServiceContracts;
 using Services;
 
@@ -18,12 +20,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-// Add Scoped to Inversion of Control (IoC container)
+// Add Scoped to Inversion of Control (IoC container) for Services
 builder.Services.AddScoped<IDiaryEntryService, DiaryEntryService>();
 builder.Services.AddScoped<IEntryTagService, EntryTagService>();
 builder.Services.AddScoped<IMediaAttachmentService, MediaAttachmentService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+// Add Scoped to Inversion of Control (IoC container) for Repositories
+builder.Services.AddScoped<IDiaryEntryRepository, DiaryEntryRepository>();
+builder.Services.AddScoped<IEntryTagRepository, EntryTagRepository>();
+builder.Services.AddScoped<IMediaAttachmentRepository, MediaAttachmentRepository>();
+builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
