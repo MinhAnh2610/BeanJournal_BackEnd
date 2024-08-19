@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceContracts
+namespace ServiceContracts.DTO.Tag
 {
-  public interface IEntryTagService
+  public class TagAddDTO
   {
   }
 }

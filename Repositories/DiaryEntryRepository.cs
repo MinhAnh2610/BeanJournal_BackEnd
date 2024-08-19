@@ -34,24 +34,34 @@ namespace Repositories
 
     public async Task<ICollection<DiaryEntry>?> GetDiaryEntriesAsync()
     {
-      return await _context.DiaryEntries.ToListAsync();
+      return await _context.DiaryEntries.Include(x => x.User).ToListAsync();
+    }
+
+    public async Task<ICollection<DiaryEntry>?> GetDiaryEntriesByUserAsync(string id)
+    {
+      return await _context.DiaryEntries.Include(x => x.User).Where(x => x.UserId == id).ToListAsync();
+    }
+
+    public async Task<DiaryEntry?> GetDiaryEntryByDateAsync(DateTime date)
+    {
+      return await _context.DiaryEntries.Include(x => x.User).FirstOrDefaultAsync(x => x.CreatedAt.Date == date);
     }
 
     public async Task<DiaryEntry?> GetDiaryEntryByIdAsync(int id)
     {
-      return await _context.DiaryEntries.FindAsync(id);
+      return await _context.DiaryEntries.Include(x => x.User).FirstOrDefaultAsync(x => x.EntryId == id);
     }
 
     public async Task<DiaryEntry?> UpdateDiaryEntryAsync(DiaryEntry entry)
     {
       var existingEntry = await _context.DiaryEntries.FindAsync(entry.EntryId);
-      if (existingEntry == null) 
+      if (existingEntry == null)
       {
         return null;
       }
       existingEntry.Content = entry.Content;
-      existingEntry.Title = entry.Title;  
-      existingEntry.Mood = entry.Mood;  
+      existingEntry.Title = entry.Title;
+      existingEntry.Mood = entry.Mood;
       existingEntry.UpdatedAt = entry.UpdatedAt;
 
       await _context.SaveChangesAsync();

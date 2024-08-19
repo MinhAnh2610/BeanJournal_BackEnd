@@ -7,6 +7,8 @@ namespace RepositoryContracts
     Task<DiaryEntry> AddDiaryEntryAsync(DiaryEntry entry);
     Task<ICollection<DiaryEntry>?> GetDiaryEntriesAsync();
     Task<DiaryEntry?> GetDiaryEntryByIdAsync(int id);
+    Task<DiaryEntry?> GetDiaryEntryByDateAsync(DateTime date);
+    Task<ICollection<DiaryEntry>?> GetDiaryEntriesByUserAsync(string id); 
     Task<DiaryEntry?> UpdateDiaryEntryAsync(DiaryEntry entry);
     Task<DiaryEntry?> DeleteDiaryEntryAsync(int id);
   }

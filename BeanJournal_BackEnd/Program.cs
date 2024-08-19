@@ -2,16 +2,26 @@ using Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Repositories;
 using RepositoryContracts;
 using ServiceContracts;
 using Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+// Add Json options to have loop reference and handle infinite looping
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+  options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+});
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+  options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,14 +49,12 @@ builder.Services.AddIdentity<User, Role>(options =>
 
 // Add Scoped to Inversion of Control (IoC container) for Services
 builder.Services.AddScoped<IDiaryEntryService, DiaryEntryService>();
-builder.Services.AddScoped<IEntryTagService, EntryTagService>();
 builder.Services.AddScoped<IMediaAttachmentService, MediaAttachmentService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 // Add Scoped to Inversion of Control (IoC container) for Repositories
 builder.Services.AddScoped<IDiaryEntryRepository, DiaryEntryRepository>();
-builder.Services.AddScoped<IEntryTagRepository, EntryTagRepository>();
 builder.Services.AddScoped<IMediaAttachmentRepository, MediaAttachmentRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

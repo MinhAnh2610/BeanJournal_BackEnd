@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Entities;
+using ServiceContracts.DTO.Tag;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,10 @@ namespace ServiceContracts
 {
   public interface ITagService
   {
+    Task<TagDTO> AddTag(TagAddDTO tag);
+    Task<ICollection<TagDTO>?> GetAllTags();
+    Task<TagDTO?> GetTagById(int id);
+    Task<TagDTO?> UpdateTag(TagUpdateDTO tag);
+    Task<TagDTO?> DeleteTag(int id);
   }
 }
