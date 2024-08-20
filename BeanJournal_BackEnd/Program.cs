@@ -2,6 +2,7 @@ using Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Repositories;
 using RepositoryContracts;
@@ -24,7 +25,14 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+  options.SwaggerDoc("v1", new OpenApiInfo()
+  {
+    Title = "BeanJournal API",
+    Version = "v1"
+  });
+});
 
 // Add Database Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -36,11 +44,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<User, Role>(options =>
 {
   options.Password.RequiredLength = 5;
-  options.Password.RequireNonAlphanumeric = true;
-  options.Password.RequireUppercase = true;
-  options.Password.RequireLowercase = true;
-  options.Password.RequireDigit = true;
-  options.Password.RequiredUniqueChars = 1;
+  options.Password.RequireNonAlphanumeric = false;
+  options.Password.RequireUppercase = false;
+  options.Password.RequireLowercase = false;
+  options.Password.RequireDigit = false;
+  options.Password.RequiredUniqueChars = 0;
 })
   .AddEntityFrameworkStores<ApplicationDbContext>()
   .AddDefaultTokenProviders()
@@ -68,7 +76,11 @@ if (app.Environment.IsDevelopment())
   app.UseSwaggerUI();
 }
 
+app.UseHsts();
+
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseRouting();
 
