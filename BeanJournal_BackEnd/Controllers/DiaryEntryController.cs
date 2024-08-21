@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 using ServiceContracts.DTO.DiaryEntry;
@@ -7,6 +8,7 @@ namespace BeanJournal_BackEnd.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
+  [Authorize]
   public class DiaryEntryController : ControllerBase
   {
     private readonly IDiaryEntryService _entryService;

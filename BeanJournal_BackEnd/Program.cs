@@ -1,18 +1,37 @@
 using Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Repositories;
 using RepositoryContracts;
 using ServiceContracts;
 using Services;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Add Logging
+builder.Services.AddLogging(loggingBuilder =>
+{
+  loggingBuilder.AddConsole();
+  loggingBuilder.AddDebug();
+});
+
+builder.Services.AddControllers(options =>
+{
+  // Add Authorization Policy
+  var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+  options.Filters.Add(new AuthorizeFilter(policy));
+});
 
 // Add Json options to have loop reference and handle infinite looping
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -25,12 +44,38 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Add Authorization to SwaggerGen
 builder.Services.AddSwaggerGen(options =>
 {
   options.SwaggerDoc("v1", new OpenApiInfo()
   {
     Title = "BeanJournal API",
     Version = "v1"
+  });
+  options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+  {
+    In = ParameterLocation.Header,
+    Description = "Please enter a valid token",
+    Name = "Authorization",
+    Type = SecuritySchemeType.Http,
+    BearerFormat = "JWT",
+    Scheme = "Bearer"
+  });
+  options.AddSecurityRequirement(new OpenApiSecurityRequirement
+  {
+    {
+      new OpenApiSecurityScheme
+      {
+        Reference = new OpenApiReference
+        {
+          Type = ReferenceType.SecurityScheme,
+          Id = "Bearer"
+        }
+      },
+      new string[]{}
+    }
   });
 });
 
@@ -55,6 +100,41 @@ builder.Services.AddIdentity<User, Role>(options =>
   .AddUserStore<UserStore<User, Role, ApplicationDbContext>>()
   .AddRoleStore<RoleStore<Role, ApplicationDbContext>>();
 
+// Add Authentication
+builder.Services.AddAuthentication(options =>
+{
+  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+  .AddJwtBearer(options =>
+{
+  options.TokenValidationParameters = new TokenValidationParameters
+  {
+    ValidateIssuer = true,
+    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+    ValidateAudience = true,
+    ValidAudience = builder.Configuration["Jwt:Audience"],
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey
+    (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+    ValidateLifetime = true,
+    ClockSkew = TimeSpan.Zero
+  };
+});
+
+// Add Authorization
+builder.Services.AddAuthorization(options =>
+{
+
+});
+
+// Add Transient to Token Service
+builder.Services.AddTransient<ITokenService, TokenService>();
+
 // Add Scoped to Inversion of Control (IoC container) for Services
 builder.Services.AddScoped<IDiaryEntryService, DiaryEntryService>();
 builder.Services.AddScoped<IMediaAttachmentService, MediaAttachmentService>();
@@ -76,18 +156,32 @@ if (app.Environment.IsDevelopment())
   app.UseSwaggerUI();
 }
 
-app.UseHsts();
-
 app.UseHttpsRedirection();
-
-app.UseStaticFiles();
-
-app.UseRouting();
 
 app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+  var request = context.Request;
+  var response = context.Response;
+
+  Console.Out.WriteLine($"Request: {request.Method} {request.Path}");
+
+  foreach (var header in request.Headers)
+  {
+    Console.WriteLine($"Header: {header.Key}: {header.Value}");
+  }
+
+  var authHeader = context.Request.Headers["Authorization"].ToString();
+  Console.WriteLine($"Authorization Header: {authHeader}");
+
+  await next();
+
+  Console.WriteLine($"Response: {response.StatusCode}");
+});
 
 app.MapControllers();
 

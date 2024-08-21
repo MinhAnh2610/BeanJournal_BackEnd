@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace Services
     {
       _configuration = configuration;
     }
-    public NewUserDTO CreateJwtToken(User user)
+    public AuthenticationResponse CreateJwtToken(User user)
     {
       DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
 
@@ -31,33 +32,77 @@ namespace Services
         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()), //Issued at (Date and time of token
                                                                             //generation)
         new Claim(ClaimTypes.NameIdentifier, user.Email!), //Unique name identifier of the user (Email)
-        new Claim(ClaimTypes.Name, user.UserName!) //Name of the user
+        new Claim(ClaimTypes.Name, user.UserName!), //Name of the user
+        new Claim(ClaimTypes.Email, user.Email!) //Email of the user
       };
 
       SymmetricSecurityKey securityKey = new SymmetricSecurityKey(
         Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
 
-      SigningCredentials signingCreadentials = new
-        SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
+      SigningCredentials creds = new
+        SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-      JwtSecurityToken tokenGenerator = new JwtSecurityToken(
-        _configuration["Jwt:Issuer"],
-        _configuration["Jwt:Audience"],
-        claims,
-        expires: expiration,
-        signingCredentials: signingCreadentials
-        );
+      SecurityTokenDescriptor tokenGenerator = new SecurityTokenDescriptor()
+      {
+        Subject = new ClaimsIdentity(claims),
+        Expires = expiration,
+        SigningCredentials = creds,
+        Issuer = _configuration["Jwt:Issuer"],
+        Audience = _configuration["Jwt:Audience"]
+      };
 
       JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-      string token = tokenHandler.WriteToken(tokenGenerator);
+      string token = tokenHandler.CreateEncodedJwt(tokenGenerator);
 
-      return new NewUserDTO()
+      return new AuthenticationResponse()
       {
         UserName = user.UserName!,
         Email = user.Email!,
         Token = token,
-        Expiration = expiration
+        Expiration = expiration,
+        RefreshToken = GenerateRefreshToken(),
+        RefreshTokenExpirationDateTime = DateTime.UtcNow.AddMinutes
+        (Convert.ToInt32(_configuration["RefreshToken:EXPIRATION_MINUTES"])),
       };
+    }
+
+    public ClaimsPrincipal? GetPrincipalFromJwtToken(string? token)
+    {
+      var tokenValidationParameters = new TokenValidationParameters()
+      {
+        ValidateAudience = true,
+        ValidAudience = _configuration["Jwt:Audience"],
+        ValidateIssuer = true,
+        ValidIssuer = _configuration["Jwt:Issuer"],
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey
+        (Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!)),
+        ValidateLifetime = false, // Should be false
+      };
+
+      JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+      ClaimsPrincipal principal = tokenHandler
+        .ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+
+      if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals
+        (SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+      {
+        throw new SecurityTokenException("Invalid Token");
+      }
+
+      return principal;
+    }
+
+    /// <summary>
+    /// Create a refresh token (base 64 string of random numbers)
+    /// </summary>
+    /// <returns></returns>
+    private string GenerateRefreshToken()
+    {
+      byte[] bytes = new byte[64];
+      var random = RandomNumberGenerator.Create();
+      random.GetBytes(bytes);
+      return Convert.ToBase64String(bytes);
     }
   }
 }

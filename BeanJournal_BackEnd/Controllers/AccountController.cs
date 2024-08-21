@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServiceContracts;
 using ServiceContracts.DTO.Account;
+using System.Security.Claims;
 
 namespace BeanJournal_BackEnd.Controllers
 {
@@ -16,13 +18,16 @@ namespace BeanJournal_BackEnd.Controllers
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly RoleManager<Role> _roleManager;
+    private readonly ITokenService _tokenService;
     public AccountController(UserManager<User> userManager,
                              SignInManager<User> signInManager,
-                             RoleManager<Role> roleManager)
+                             RoleManager<Role> roleManager,
+                             ITokenService tokenService)
     {
       _userManager = userManager;
       _signInManager = signInManager;
       _roleManager = roleManager;
+      _tokenService = tokenService;
     }
 
     /// <summary>
@@ -38,15 +43,21 @@ namespace BeanJournal_BackEnd.Controllers
         return BadRequest(ModelState);
       }
       var user = await _userManager.FindByEmailAsync(loginDto.Email);
-      var loginResult = await _signInManager.CheckPasswordSignInAsync(user!, loginDto.Password, false);
+      if (user == null)
+      {
+        return BadRequest("User not found");
+      }
+      var loginResult = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
       if (loginResult.Succeeded)
       {
-        return Ok(new NewUserDTO()
-        {
-          UserName = user?.UserName!,
-          Email = user?.Email!,
-          Token = ""
-        });
+        var authentication = _tokenService.CreateJwtToken(user);
+
+        user.RefreshToken = authentication.RefreshToken; 
+        user.RefreshTokenExpirationDateTime = authentication.RefreshTokenExpirationDateTime;
+
+        await _userManager.UpdateAsync(user);
+
+        return Ok(authentication);
       }
       else
       {
@@ -82,12 +93,14 @@ namespace BeanJournal_BackEnd.Controllers
         var roleResult = await _userManager.AddToRoleAsync(user, "User");
         if (roleResult.Succeeded)
         {
-          return Ok(new NewUserDTO()
-          {
-            UserName = user.UserName,
-            Email = user.Email,
-            Token = ""
-          });
+          var authentication = _tokenService.CreateJwtToken(user);
+
+          user.RefreshToken = authentication.RefreshToken;
+          user.RefreshTokenExpirationDateTime = authentication.RefreshTokenExpirationDateTime;
+
+          await _userManager.UpdateAsync(user);
+
+          return Ok(authentication);
         }
         else
         {
@@ -110,6 +123,46 @@ namespace BeanJournal_BackEnd.Controllers
       await _signInManager.SignOutAsync();
 
       return NoContent();
+    }
+
+    [HttpPost("generate-new-jwt-token")]
+    public async Task<IActionResult> GenerateNewAccessToken([FromBody] TokenModel tokenModel)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+
+      if (tokenModel == null)
+      {
+        return BadRequest("Invalid Client Request");
+      }
+
+      ClaimsPrincipal? principal = _tokenService.GetPrincipalFromJwtToken(tokenModel.Token);
+      if (principal == null)
+      {
+        return BadRequest("Invalid jwt access token");
+      }
+
+      string? email = principal.FindFirstValue(ClaimTypes.Email);
+
+      User? user = await _userManager.FindByEmailAsync(email!);
+
+      if (user == null || user.RefreshToken 
+        != tokenModel.RefreshToken 
+        || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow) 
+      {
+        return BadRequest("Invalid Refresh Token");
+      }
+
+      AuthenticationResponse authentication = _tokenService.CreateJwtToken(user);
+      
+      user.RefreshToken = authentication.RefreshToken;
+      user.RefreshTokenExpirationDateTime = authentication.RefreshTokenExpirationDateTime;
+
+      await _userManager.UpdateAsync(user);
+
+      return Ok(authentication);
     }
   }
 }

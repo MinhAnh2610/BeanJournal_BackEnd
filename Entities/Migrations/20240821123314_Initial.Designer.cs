@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240818122442_Seed")]
-    partial class Seed
+    [Migration("20240821123314_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -285,7 +285,7 @@ namespace Entities.Migrations
                             Id = "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "7c9f577f-8a87-4c15-9306-b51848c2ac3b",
-                            CreatedAt = new DateTime(2024, 8, 18, 19, 24, 42, 36, DateTimeKind.Local).AddTicks(723),
+                            CreatedAt = new DateTime(2024, 8, 21, 19, 33, 13, 999, DateTimeKind.Local).AddTicks(481),
                             Email = "soybean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -302,7 +302,7 @@ namespace Entities.Migrations
                             Id = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "d81e6a9a-d634-4460-a5fb-c9d6605c0338",
-                            CreatedAt = new DateTime(2024, 8, 18, 19, 24, 42, 36, DateTimeKind.Local).AddTicks(1121),
+                            CreatedAt = new DateTime(2024, 8, 21, 19, 33, 13, 999, DateTimeKind.Local).AddTicks(865),
                             Email = "greenbean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,

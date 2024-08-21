@@ -254,6 +254,13 @@ namespace Entities.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpirationDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -282,7 +289,7 @@ namespace Entities.Migrations
                             Id = "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "7c9f577f-8a87-4c15-9306-b51848c2ac3b",
-                            CreatedAt = new DateTime(2024, 8, 18, 19, 24, 42, 36, DateTimeKind.Local).AddTicks(723),
+                            CreatedAt = new DateTime(2024, 8, 21, 23, 33, 29, 214, DateTimeKind.Local).AddTicks(4357),
                             Email = "soybean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -290,6 +297,8 @@ namespace Entities.Migrations
                             NormalizedUserName = "SOYBEAN",
                             PasswordHash = "AQAAAAEAACcQAAAAEMu+LydDLTTvQci/f5hBc1WTMehHnsIXNl/3lwWChO/4WkXxQpA==",
                             PhoneNumberConfirmed = false,
+                            RefreshToken = "",
+                            RefreshTokenExpirationDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "29a0e19c-6e5a-4d7b-b474-015d2461ef76",
                             TwoFactorEnabled = false,
                             UserName = "soybean"
@@ -299,7 +308,7 @@ namespace Entities.Migrations
                             Id = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "d81e6a9a-d634-4460-a5fb-c9d6605c0338",
-                            CreatedAt = new DateTime(2024, 8, 18, 19, 24, 42, 36, DateTimeKind.Local).AddTicks(1121),
+                            CreatedAt = new DateTime(2024, 8, 21, 23, 33, 29, 214, DateTimeKind.Local).AddTicks(4859),
                             Email = "greenbean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -307,6 +316,8 @@ namespace Entities.Migrations
                             NormalizedUserName = "GREENBEAN",
                             PasswordHash = "AQAAAAEAACcQAAAAED7fJ3s5wEK9jFVlE+Se3dDwH8jZV6cR9yL5B5g3rY4Vpxfd5vQg==",
                             PhoneNumberConfirmed = false,
+                            RefreshToken = "",
+                            RefreshTokenExpirationDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "74b0d82f-2ef7-4c9b-92cb-8a4e94db1f3d",
                             TwoFactorEnabled = false,
                             UserName = "greenbean"

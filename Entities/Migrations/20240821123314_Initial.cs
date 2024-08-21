@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Entities.Migrations
 {
     /// <inheritdoc />
@@ -16,6 +18,7 @@ namespace Entities.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -174,7 +177,7 @@ namespace Entities.Migrations
                 name: "DiaryEntries",
                 columns: table => new
                 {
-                    DiaryEntryId = table.Column<int>(type: "int", nullable: false)
+                    EntryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
@@ -185,7 +188,7 @@ namespace Entities.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DiaryEntries", x => x.DiaryEntryId);
+                    table.PrimaryKey("PK_DiaryEntries", x => x.EntryId);
                     table.ForeignKey(
                         name: "FK_DiaryEntries_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -198,19 +201,17 @@ namespace Entities.Migrations
                 name: "EntryTags",
                 columns: table => new
                 {
-                    EntryTagId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     EntryId = table.Column<int>(type: "int", nullable: false),
                     TagId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EntryTags", x => x.EntryTagId);
+                    table.PrimaryKey("PK_EntryTags", x => new { x.EntryId, x.TagId });
                     table.ForeignKey(
                         name: "FK_EntryTags_DiaryEntries_EntryId",
                         column: x => x.EntryId,
                         principalTable: "DiaryEntries",
-                        principalColumn: "DiaryEntryId",
+                        principalColumn: "EntryId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_EntryTags_Tags_TagId",
@@ -238,8 +239,74 @@ namespace Entities.Migrations
                         name: "FK_MediaAttachments_DiaryEntries_EntryId",
                         column: x => x.EntryId,
                         principalTable: "DiaryEntries",
-                        principalColumn: "DiaryEntryId",
+                        principalColumn: "EntryId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "0508330E-790A-497C-A84A-5DE5E0D8367B", "84cc659b-8d62-4299-8473-4c905a79bb0d", "Role", "User", "USER" },
+                    { "F6F6F8BD-F92A-43EF-A8D9-CCC665D5021F", "a3e9f59f-15dc-4b9f-bc4e-06a39e5a9c6a", "Role", "Admin", "ADMIN" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC", 0, "d81e6a9a-d634-4460-a5fb-c9d6605c0338", new DateTime(2024, 8, 21, 19, 33, 13, 999, DateTimeKind.Local).AddTicks(865), "greenbean@example.com", true, false, null, "GREENBEAN@EXAMPLE.COM", "GREENBEAN", "AQAAAAEAACcQAAAAED7fJ3s5wEK9jFVlE+Se3dDwH8jZV6cR9yL5B5g3rY4Vpxfd5vQg==", null, false, "74b0d82f-2ef7-4c9b-92cb-8a4e94db1f3d", false, "greenbean" },
+                    { "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D", 0, "7c9f577f-8a87-4c15-9306-b51848c2ac3b", new DateTime(2024, 8, 21, 19, 33, 13, 999, DateTimeKind.Local).AddTicks(481), "soybean@example.com", true, false, null, "SOYBEAN@EXAMPLE.COM", "SOYBEAN", "AQAAAAEAACcQAAAAEMu+LydDLTTvQci/f5hBc1WTMehHnsIXNl/3lwWChO/4WkXxQpA==", null, false, "29a0e19c-6e5a-4d7b-b474-015d2461ef76", false, "soybean" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tags",
+                columns: new[] { "TagId", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Nature" },
+                    { 2, "Reflection" },
+                    { 3, "Productivity" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { "0508330E-790A-497C-A84A-5DE5E0D8367B", "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC" },
+                    { "F6F6F8BD-F92A-43EF-A8D9-CCC665D5021F", "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "DiaryEntries",
+                columns: new[] { "EntryId", "Content", "CreatedAt", "Mood", "Title", "UpdatedAt", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "Went to the park today, it was sunny and relaxing.", new DateTime(2024, 8, 10, 9, 15, 0, 0, DateTimeKind.Unspecified), "Happy", "A Day at the Park", new DateTime(2024, 8, 10, 9, 15, 0, 0, DateTimeKind.Unspecified), "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC" },
+                    { 2, "Spent some time thinking about life, feeling a bit melancholy.", new DateTime(2024, 8, 11, 20, 30, 0, 0, DateTimeKind.Unspecified), "Reflective", "Reflective Evening", new DateTime(2024, 8, 11, 20, 30, 0, 0, DateTimeKind.Unspecified), "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC" },
+                    { 3, "Had a great start today, finished a lot of tasks and feeling accomplished.", new DateTime(2024, 8, 12, 7, 45, 0, 0, DateTimeKind.Unspecified), "Energetic", "Productive Morning", new DateTime(2024, 8, 12, 7, 45, 0, 0, DateTimeKind.Unspecified), "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "EntryTags",
+                columns: new[] { "EntryId", "TagId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 2 },
+                    { 3, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MediaAttachments",
+                columns: new[] { "MediaId", "CreatedAt", "EntryId", "FilePath", "FileType" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 8, 10, 9, 20, 0, 0, DateTimeKind.Unspecified), 1, "/media/park-photo.jpg", "image/jpeg" },
+                    { 2, new DateTime(2024, 8, 11, 20, 45, 0, 0, DateTimeKind.Unspecified), 2, "/media/thoughts-audio.mp3", "audio/mpeg" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -285,11 +352,6 @@ namespace Entities.Migrations
                 name: "IX_DiaryEntries_UserId",
                 table: "DiaryEntries",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EntryTags_EntryId",
-                table: "EntryTags",
-                column: "EntryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EntryTags_TagId",
