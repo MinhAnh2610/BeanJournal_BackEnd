@@ -34,22 +34,34 @@ namespace Repositories
 
     public async Task<ICollection<DiaryEntry>?> GetDiaryEntriesAsync()
     {
-      return await _context.DiaryEntries.Include(x => x.User).ToListAsync();
+      return await _context.DiaryEntries
+        .Include(x => x.User)
+        .Include(x => x.EntryTags)!
+          .ThenInclude(x => x.Tag)
+        .ToListAsync();
     }
 
     public async Task<ICollection<DiaryEntry>?> GetDiaryEntriesByUserAsync(string id)
     {
-      return await _context.DiaryEntries.Include(x => x.User).Where(x => x.UserId == id).ToListAsync();
+      return await _context.DiaryEntries
+        .Include(x => x.User)
+        .Include(x => x.EntryTags)
+        .Where(x => x.UserId == id)
+        .ToListAsync();
     }
 
     public async Task<DiaryEntry?> GetDiaryEntryByDateAsync(DateTime date)
     {
-      return await _context.DiaryEntries.Include(x => x.User).FirstOrDefaultAsync(x => x.CreatedAt.Date == date);
+      return await _context.DiaryEntries
+        .Include(x => x.User)
+        .FirstOrDefaultAsync(x => x.CreatedAt.Date == date);
     }
 
     public async Task<DiaryEntry?> GetDiaryEntryByIdAsync(int id)
     {
-      return await _context.DiaryEntries.Include(x => x.User).FirstOrDefaultAsync(x => x.EntryId == id);
+      return await _context.DiaryEntries
+        .Include(x => x.User)
+        .FirstOrDefaultAsync(x => x.EntryId == id);
     }
 
     public async Task<DiaryEntry?> UpdateDiaryEntryAsync(DiaryEntry entry)

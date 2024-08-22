@@ -21,11 +21,11 @@ namespace Services
     {
       _configuration = configuration;
     }
-    public AuthenticationResponse CreateJwtToken(User user, Role role)
+    public AuthenticationResponse CreateJwtToken(ApplicationUser user, ApplicationRole role)
     {
       DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
 
-      Claim[] claims = new Claim[]
+      var claims = new List<Claim>()
       {
         new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), //Subject (user id)
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //JWT unique ID

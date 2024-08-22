@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ServiceContracts.DTO.Tag;
 
 namespace ServiceContracts.DTO.DiaryEntry
 {
@@ -20,5 +21,6 @@ namespace ServiceContracts.DTO.DiaryEntry
     public string Mood { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public ICollection<TagDTO>? Tags { get; set; }
   }
 }

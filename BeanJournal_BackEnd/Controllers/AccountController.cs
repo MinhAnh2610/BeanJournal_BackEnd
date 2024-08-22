@@ -15,13 +15,13 @@ namespace BeanJournal_BackEnd.Controllers
   [AllowAnonymous]
   public class AccountController : ControllerBase
   {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
-    private readonly RoleManager<Role> _roleManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly ITokenService _tokenService;
-    public AccountController(UserManager<User> userManager,
-                             SignInManager<User> signInManager,
-                             RoleManager<Role> roleManager,
+    public AccountController(UserManager<ApplicationUser> userManager,
+                             SignInManager<ApplicationUser> signInManager,
+                             RoleManager<ApplicationRole> roleManager,
                              ITokenService tokenService)
     {
       _userManager = userManager;
@@ -87,7 +87,7 @@ namespace BeanJournal_BackEnd.Controllers
       {
         return BadRequest("Email is already registered");
       }
-      var user = new User()
+      var user = new ApplicationUser()
       {
         UserName = registerDto.UserName,
         Email = registerDto.Email
@@ -153,8 +153,8 @@ namespace BeanJournal_BackEnd.Controllers
       string? email = principal.FindFirstValue(ClaimTypes.Email);
       string? role = principal.FindFirstValue(ClaimTypes.Role);
 
-      Role? userRole = await _roleManager.FindByNameAsync(role!);
-      User? user = await _userManager.FindByEmailAsync(email!);
+      ApplicationRole? userRole = await _roleManager.FindByNameAsync(role!);
+      ApplicationUser? user = await _userManager.FindByEmailAsync(email!);
 
       if (user == null || user.RefreshToken 
         != tokenModel.RefreshToken 

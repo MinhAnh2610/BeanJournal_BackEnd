@@ -1,5 +1,6 @@
 ﻿using Entities;
 using ServiceContracts.DTO.DiaryEntry;
+using ServiceContracts.DTO.Tag;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,14 @@ namespace ServiceContracts.Mapper
         Title = entry.Title,
         CreatedAt = entry.CreatedAt,
         UpdatedAt = entry.UpdatedAt,
-        Username = entry.User?.UserName!
+        Username = entry.User?.UserName!,
+        Tags = entry.EntryTags?
+          .Select(x => new TagDTO()
+          {
+            TagId = x.TagId,
+            Name = x.Tag!.Name
+          })
+          .ToList()!,
       };
     }
   }

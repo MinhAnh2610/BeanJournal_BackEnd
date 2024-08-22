@@ -18,7 +18,7 @@ namespace Entities.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -33,6 +33,8 @@ namespace Entities.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshTokenExpirationDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -248,17 +250,17 @@ namespace Entities.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0508330E-790A-497C-A84A-5DE5E0D8367B", "84cc659b-8d62-4299-8473-4c905a79bb0d", "Role", "User", "USER" },
-                    { "F6F6F8BD-F92A-43EF-A8D9-CCC665D5021F", "a3e9f59f-15dc-4b9f-bc4e-06a39e5a9c6a", "Role", "Admin", "ADMIN" }
+                    { "0508330E-790A-497C-A84A-5DE5E0D8367B", "84cc659b-8d62-4299-8473-4c905a79bb0d", "ApplicationRole", "User", "USER" },
+                    { "F6F6F8BD-F92A-43EF-A8D9-CCC665D5021F", "a3e9f59f-15dc-4b9f-bc4e-06a39e5a9c6a", "ApplicationRole", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpirationDateTime", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC", 0, "d81e6a9a-d634-4460-a5fb-c9d6605c0338", new DateTime(2024, 8, 21, 19, 33, 13, 999, DateTimeKind.Local).AddTicks(865), "greenbean@example.com", true, false, null, "GREENBEAN@EXAMPLE.COM", "GREENBEAN", "AQAAAAEAACcQAAAAED7fJ3s5wEK9jFVlE+Se3dDwH8jZV6cR9yL5B5g3rY4Vpxfd5vQg==", null, false, "74b0d82f-2ef7-4c9b-92cb-8a4e94db1f3d", false, "greenbean" },
-                    { "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D", 0, "7c9f577f-8a87-4c15-9306-b51848c2ac3b", new DateTime(2024, 8, 21, 19, 33, 13, 999, DateTimeKind.Local).AddTicks(481), "soybean@example.com", true, false, null, "SOYBEAN@EXAMPLE.COM", "SOYBEAN", "AQAAAAEAACcQAAAAEMu+LydDLTTvQci/f5hBc1WTMehHnsIXNl/3lwWChO/4WkXxQpA==", null, false, "29a0e19c-6e5a-4d7b-b474-015d2461ef76", false, "soybean" }
+                    { "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC", 0, "d81e6a9a-d634-4460-a5fb-c9d6605c0338", new DateTime(2024, 8, 22, 16, 57, 45, 819, DateTimeKind.Local).AddTicks(8854), "greenbean@example.com", true, false, null, "GREENBEAN@EXAMPLE.COM", "GREENBEAN", "AQAAAAEAACcQAAAAED7fJ3s5wEK9jFVlE+Se3dDwH8jZV6cR9yL5B5g3rY4Vpxfd5vQg==", null, false, "", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "74b0d82f-2ef7-4c9b-92cb-8a4e94db1f3d", false, "greenbean" },
+                    { "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D", 0, "7c9f577f-8a87-4c15-9306-b51848c2ac3b", new DateTime(2024, 8, 22, 16, 57, 45, 819, DateTimeKind.Local).AddTicks(8520), "soybean@example.com", true, false, null, "SOYBEAN@EXAMPLE.COM", "SOYBEAN", "AQAAAAEAACcQAAAAEMu+LydDLTTvQci/f5hBc1WTMehHnsIXNl/3lwWChO/4WkXxQpA==", null, false, "", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "29a0e19c-6e5a-4d7b-b474-015d2461ef76", false, "soybean" }
                 });
 
             migrationBuilder.InsertData(

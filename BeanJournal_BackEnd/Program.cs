@@ -34,10 +34,10 @@ builder.Services.AddControllers(options =>
 });
 
 // Add Json options to have loop reference and handle infinite looping
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-  options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-});
+//builder.Services.AddControllers().AddJsonOptions(options =>
+//{
+//  options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+//});
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
   options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -86,7 +86,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 // Add Identity 
-builder.Services.AddIdentity<User, Role>(options =>
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
   options.Password.RequiredLength = 5;
   options.Password.RequireNonAlphanumeric = false;
@@ -97,8 +97,8 @@ builder.Services.AddIdentity<User, Role>(options =>
 })
   .AddEntityFrameworkStores<ApplicationDbContext>()
   .AddDefaultTokenProviders()
-  .AddUserStore<UserStore<User, Role, ApplicationDbContext>>()
-  .AddRoleStore<RoleStore<Role, ApplicationDbContext>>();
+  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext>>()
+  .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext>>();
 
 // Add Authentication
 builder.Services.AddAuthentication(options =>
@@ -112,6 +112,25 @@ builder.Services.AddAuthentication(options =>
 })
   .AddJwtBearer(options =>
 {
+  options.Events = new JwtBearerEvents
+  {
+    OnTokenValidated = context =>
+    {
+      // Log the claims in the token
+      var claims = context.Principal!.Claims;
+      foreach (var claim in claims)
+      {
+        Console.WriteLine($"{claim.Type}: {claim.Value}");
+      }
+
+      return Task.CompletedTask;
+    },
+    OnAuthenticationFailed = context =>
+    {
+      Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+      return Task.CompletedTask;
+    }
+  };
   options.TokenValidationParameters = new TokenValidationParameters
   {
     ValidateIssuer = true,
@@ -163,25 +182,25 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.Use(async (context, next) =>
-{
-  var request = context.Request;
-  var response = context.Response;
+//app.Use(async (context, next) =>
+//{
+//  var request = context.Request;
+//  var response = context.Response;
 
-  Console.Out.WriteLine($"Request: {request.Method} {request.Path}");
+//  Console.Out.WriteLine($"Request: {request.Method} {request.Path}");
 
-  foreach (var header in request.Headers)
-  {
-    Console.WriteLine($"Header: {header.Key}: {header.Value}");
-  }
+//  foreach (var header in request.Headers)
+//  {
+//    Console.WriteLine($"Header: {header.Key}: {header.Value}");
+//  }
 
-  var authHeader = context.Request.Headers["Authorization"].ToString();
-  Console.WriteLine($"Authorization Header: {authHeader}");
+//  var authHeader = context.Request.Headers["Authorization"].ToString();
+//  Console.WriteLine($"Authorization Header: {authHeader}");
 
-  await next();
+//  await next();
 
-  Console.WriteLine($"Response: {response.StatusCode}");
-});
+//  Console.WriteLine($"Response: {response.StatusCode}");
+//});
 
 app.MapControllers();
 

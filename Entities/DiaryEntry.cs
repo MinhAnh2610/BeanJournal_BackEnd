@@ -15,7 +15,7 @@ namespace Entities
     public int EntryId { get; set; }
     public string UserId { get; set; } = string.Empty;
     [ForeignKey("UserId")]
-    public User? User { get; set; }
+    public ApplicationUser? User { get; set; }
     [StringLength(150)]
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;

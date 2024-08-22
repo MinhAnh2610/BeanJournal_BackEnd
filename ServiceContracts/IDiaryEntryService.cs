@@ -14,7 +14,7 @@ namespace ServiceContracts
     Task<ICollection<DiaryEntryDTO>?> GetAllDiaryEntries();
     Task<DiaryEntryDTO?> GetDiaryEntryById(int id);
     Task<DiaryEntryDTO?> GetDiaryEntryByDate(DateTime date);
-    Task<ICollection<DiaryEntryDTO>?> GetDiaryEntryByUser(string userId);
+    Task<ICollection<DiaryEntryDTO>?> GetDiaryEntryByUserId(string userId);
     Task<DiaryEntryDTO?> UpdateDiaryEntry(DiaryEntryUpdateDTO entry);
     Task<DiaryEntryDTO?> DeleteDiaryEntry(int id);
   }

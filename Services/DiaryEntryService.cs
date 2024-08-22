@@ -59,7 +59,7 @@ namespace Services
       return entryResponse.ToDiaryEntryDto();
     }
 
-    public async Task<ICollection<DiaryEntryDTO>?> GetDiaryEntryByUser(string userId)
+    public async Task<ICollection<DiaryEntryDTO>?> GetDiaryEntryByUserId(string userId)
     {
       var entryResponse = await _entryRepository.GetDiaryEntriesByUserAsync(userId);
       if (entryResponse == null)

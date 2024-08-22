@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Entities
 {
   [Table("Users")]
-  public class User : IdentityUser
+  public class ApplicationUser : IdentityUser
   {
     public string RefreshToken { get; set; } = string.Empty;
     public DateTime RefreshTokenExpirationDateTime { get; set; }

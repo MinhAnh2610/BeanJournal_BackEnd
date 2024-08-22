@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 using ServiceContracts.DTO.DiaryEntry;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BeanJournal_BackEnd.Controllers
 {
@@ -25,6 +28,22 @@ namespace BeanJournal_BackEnd.Controllers
         return BadRequest(ModelState);
       }
       var entries = await _entryService.GetAllDiaryEntries();
+      if (entries == null)
+      {
+        return NoContent();
+      }
+      return Ok(entries);
+    }
+
+    [HttpGet("user-diary")]
+    public async Task<IActionResult> GetByUserId()
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+      string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+      var entries = await _entryService.GetDiaryEntryByUserId(userId);
       if (entries == null)
       {
         return NoContent();

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-  public class ApplicationDbContext : IdentityDbContext<User>
+  public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
   {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -39,12 +39,12 @@ namespace Entities
 
       #region Seed Data
       string usersJson = System.IO.File.ReadAllText("SampleData/users.json");
-      List<User>? users = System.Text.Json.JsonSerializer.Deserialize<List<User>>(usersJson);
-      modelBuilder.Entity<User>().HasData(users!);
+      List<ApplicationUser>? users = System.Text.Json.JsonSerializer.Deserialize<List<ApplicationUser>>(usersJson);
+      modelBuilder.Entity<ApplicationUser>().HasData(users!);
 
       string rolesJson = System.IO.File.ReadAllText("SampleData/roles.json");
-      List<Role>? roles = System.Text.Json.JsonSerializer.Deserialize<List<Role>>(rolesJson);
-      modelBuilder.Entity<Role>().HasData(roles!);
+      List<ApplicationRole>? roles = System.Text.Json.JsonSerializer.Deserialize<List<ApplicationRole>>(rolesJson);
+      modelBuilder.Entity<ApplicationRole>().HasData(roles!);
 
       string userRolesJson = System.IO.File.ReadAllText("SampleData/userRoles.json");
       List<IdentityUserRole<string>>? userRoles = System.Text.Json.JsonSerializer.Deserialize<List<IdentityUserRole<string>>>(userRolesJson);
