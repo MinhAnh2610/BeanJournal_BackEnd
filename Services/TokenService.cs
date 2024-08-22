@@ -21,7 +21,7 @@ namespace Services
     {
       _configuration = configuration;
     }
-    public AuthenticationResponse CreateJwtToken(User user)
+    public AuthenticationResponse CreateJwtToken(User user, Role role)
     {
       DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
 
@@ -33,7 +33,8 @@ namespace Services
                                                                             //generation)
         new Claim(ClaimTypes.NameIdentifier, user.Email!), //Unique name identifier of the user (Email)
         new Claim(ClaimTypes.Name, user.UserName!), //Name of the user
-        new Claim(ClaimTypes.Email, user.Email!) //Email of the user
+        new Claim(ClaimTypes.Email, user.Email!), //Email of the user
+        new Claim(ClaimTypes.Role, role.Name!.ToString()) // Role of the user
       };
 
       SymmetricSecurityKey securityKey = new SymmetricSecurityKey(

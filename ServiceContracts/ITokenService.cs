@@ -11,7 +11,7 @@ namespace ServiceContracts
 {
   public interface ITokenService
   {
-    AuthenticationResponse CreateJwtToken(User user);
+    AuthenticationResponse CreateJwtToken(User user, Role role);
     ClaimsPrincipal? GetPrincipalFromJwtToken(string? token);
   }
 }

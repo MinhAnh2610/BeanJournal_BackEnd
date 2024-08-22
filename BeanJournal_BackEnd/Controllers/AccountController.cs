@@ -50,7 +50,12 @@ namespace BeanJournal_BackEnd.Controllers
       var loginResult = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
       if (loginResult.Succeeded)
       {
-        var authentication = _tokenService.CreateJwtToken(user);
+        var userRoles = await _userManager.GetRolesAsync(user);
+        var userRole = userRoles.FirstOrDefault();
+
+        var role = await _roleManager.FindByNameAsync(userRole!);
+
+        var authentication = _tokenService.CreateJwtToken(user, role!);
 
         user.RefreshToken = authentication.RefreshToken; 
         user.RefreshTokenExpirationDateTime = authentication.RefreshTokenExpirationDateTime;
@@ -93,7 +98,8 @@ namespace BeanJournal_BackEnd.Controllers
         var roleResult = await _userManager.AddToRoleAsync(user, "User");
         if (roleResult.Succeeded)
         {
-          var authentication = _tokenService.CreateJwtToken(user);
+          var role = await _roleManager.FindByNameAsync("User");
+          var authentication = _tokenService.CreateJwtToken(user, role!);
 
           user.RefreshToken = authentication.RefreshToken;
           user.RefreshTokenExpirationDateTime = authentication.RefreshTokenExpirationDateTime;
@@ -145,7 +151,9 @@ namespace BeanJournal_BackEnd.Controllers
       }
 
       string? email = principal.FindFirstValue(ClaimTypes.Email);
+      string? role = principal.FindFirstValue(ClaimTypes.Role);
 
+      Role? userRole = await _roleManager.FindByNameAsync(role!);
       User? user = await _userManager.FindByEmailAsync(email!);
 
       if (user == null || user.RefreshToken 
@@ -155,7 +163,7 @@ namespace BeanJournal_BackEnd.Controllers
         return BadRequest("Invalid Refresh Token");
       }
 
-      AuthenticationResponse authentication = _tokenService.CreateJwtToken(user);
+      AuthenticationResponse authentication = _tokenService.CreateJwtToken(user, userRole!);
       
       user.RefreshToken = authentication.RefreshToken;
       user.RefreshTokenExpirationDateTime = authentication.RefreshTokenExpirationDateTime;
