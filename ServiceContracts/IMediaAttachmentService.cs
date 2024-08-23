@@ -12,6 +12,7 @@ namespace ServiceContracts
     Task<MediaAttachmentDTO> AddMediaAttachment(MediaAttachmentAddDTO mediaAttachment);
     Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachments();
     Task<MediaAttachmentDTO?> GetMediaAttachmentById(int id);
+    Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachmentsByUser(string id);
     Task<MediaAttachmentDTO?> UpdateMediaAttachment(MediaAttachmentUpdateDTO mediaAttachment);
     Task<MediaAttachmentDTO?> DeleteMediaAttachment(int id);
   }

@@ -12,6 +12,7 @@ using Repositories;
 using RepositoryContracts;
 using ServiceContracts;
 using Services;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -34,10 +35,10 @@ builder.Services.AddControllers(options =>
 });
 
 // Add Json options to have loop reference and handle infinite looping
-//builder.Services.AddControllers().AddJsonOptions(options =>
-//{
-//  options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-//});
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+  options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+});
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
   options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -54,6 +55,14 @@ builder.Services.AddSwaggerGen(options =>
     Title = "BeanJournal API",
     Version = "v1"
   });
+
+  // Get the XML comments file path
+  var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+  var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+  // Include the XML comments file in Swagger
+  options.IncludeXmlComments(xmlPath);
+
   options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
   {
     In = ParameterLocation.Header,

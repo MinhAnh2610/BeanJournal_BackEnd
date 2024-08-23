@@ -10,6 +10,9 @@ using System.Security.Claims;
 
 namespace BeanJournal_BackEnd.Controllers
 {
+  /// <summary>
+  /// Account APIs
+  /// </summary>
   [Route("api/[controller]")]
   [ApiController]
   [AllowAnonymous]
@@ -19,6 +22,14 @@ namespace BeanJournal_BackEnd.Controllers
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly ITokenService _tokenService;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userManager"></param>
+    /// <param name="signInManager"></param>
+    /// <param name="roleManager"></param>
+    /// <param name="tokenService"></param>
     public AccountController(UserManager<ApplicationUser> userManager,
                              SignInManager<ApplicationUser> signInManager,
                              RoleManager<ApplicationRole> roleManager,
@@ -57,7 +68,7 @@ namespace BeanJournal_BackEnd.Controllers
 
         var authentication = _tokenService.CreateJwtToken(user, role!);
 
-        user.RefreshToken = authentication.RefreshToken; 
+        user.RefreshToken = authentication.RefreshToken;
         user.RefreshTokenExpirationDateTime = authentication.RefreshTokenExpirationDateTime;
 
         await _userManager.UpdateAsync(user);
@@ -120,6 +131,55 @@ namespace BeanJournal_BackEnd.Controllers
     }
 
     /// <summary>
+    /// Enter email to generate a reset password token
+    /// </summary>
+    /// <param name="forgotPasswordDto"></param>
+    /// <returns></returns>
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO forgotPasswordDto)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+
+      var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
+      if (user != null)
+      {
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        return Ok(token);
+      }
+      return BadRequest("User not found");
+    }
+
+    /// <summary>
+    /// Enter new password to change the old one
+    /// </summary>
+    /// <param name="resetPasswordDto"></param>
+    /// <returns></returns>
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDto)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+
+      var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
+      if (user != null)
+      {
+        var resetPasswordResult = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
+        if (resetPasswordResult.Succeeded)
+        {
+          return Ok("Password has been changed");
+        }
+        return StatusCode(500, "Something went wrong");
+      }
+      return BadRequest("User not found");
+    }
+
+    /// <summary>
     /// Logout from system
     /// </summary>
     /// <returns></returns>
@@ -131,6 +191,11 @@ namespace BeanJournal_BackEnd.Controllers
       return NoContent();
     }
 
+    /// <summary>
+    /// Generate new access and refresh tokens from old ones
+    /// </summary>
+    /// <param name="tokenModel"></param>
+    /// <returns></returns>
     [HttpPost("generate-new-jwt-token")]
     public async Task<IActionResult> GenerateNewAccessToken([FromBody] TokenModel tokenModel)
     {
@@ -156,15 +221,15 @@ namespace BeanJournal_BackEnd.Controllers
       ApplicationRole? userRole = await _roleManager.FindByNameAsync(role!);
       ApplicationUser? user = await _userManager.FindByEmailAsync(email!);
 
-      if (user == null || user.RefreshToken 
-        != tokenModel.RefreshToken 
-        || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow) 
+      if (user == null || user.RefreshToken
+        != tokenModel.RefreshToken
+        || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
       {
         return BadRequest("Invalid Refresh Token");
       }
 
       AuthenticationResponse authentication = _tokenService.CreateJwtToken(user, userRole!);
-      
+
       user.RefreshToken = authentication.RefreshToken;
       user.RefreshTokenExpirationDateTime = authentication.RefreshTokenExpirationDateTime;
 

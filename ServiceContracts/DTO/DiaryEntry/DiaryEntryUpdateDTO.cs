@@ -11,7 +11,6 @@ namespace ServiceContracts.DTO.DiaryEntry
 {
   public class DiaryEntryUpdateDTO
   {
-    public int EntryId { get; set; }
     [StringLength(150)]
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;

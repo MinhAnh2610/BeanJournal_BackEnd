@@ -26,7 +26,7 @@ namespace Repositories
     public async Task<MediaAttachment?> DeleteMediaAttachmentAsync(int id)
     {
       var media = await _context.MediaAttachments.FindAsync(id);
-      if (media == null) 
+      if (media == null)
       {
         return null;
       }
@@ -37,24 +37,39 @@ namespace Repositories
 
     public async Task<MediaAttachment?> GetMediaAttachmentByIdAsync(int id)
     {
-      return await _context.MediaAttachments.FindAsync(id);
+      return await _context.MediaAttachments
+        .Include(x => x.Entry)
+          .ThenInclude(x => x!.User)
+        .FirstOrDefaultAsync(x => x.MediaId == id);
     }
 
     public async Task<ICollection<MediaAttachment>?> GetMediaAttachmentsAsync()
     {
-      return await _context.MediaAttachments.ToListAsync();
+      return await _context.MediaAttachments
+        .Include(x => x.Entry)
+          .ThenInclude(x => x!.User)
+        .ToListAsync();
     }
 
-    public async Task<MediaAttachment?> UpdateMediaAttachmentAsync(MediaAttachment mediaAttachment)
+    public async Task<ICollection<MediaAttachment>?> GetMediaAttachmentsByUserAsync(string id)
     {
-      var existingMedia = await _context.MediaAttachments.FindAsync(mediaAttachment.MediaId);
-      if (existingMedia == null) 
+      return await _context.MediaAttachments
+        .Include(x => x.Entry)
+          .ThenInclude(x => x!.User)
+        .Where(x => x.Entry!.UserId == id)
+        .ToListAsync();
+    }
+
+    public async Task<MediaAttachment?> UpdateMediaAttachmentAsync(int mediaId, MediaAttachment mediaAttachment)
+    {
+      var existingMedia = await _context.MediaAttachments.FindAsync(mediaId);
+      if (existingMedia == null)
       {
         return null;
       }
       existingMedia.FilePath = mediaAttachment.FilePath;
-      existingMedia.FileType = mediaAttachment.FileType;  
-      
+      existingMedia.FileType = mediaAttachment.FileType;
+
       await _context.SaveChangesAsync();
       return existingMedia;
     }

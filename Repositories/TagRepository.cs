@@ -45,9 +45,9 @@ namespace Repositories
       return await _context.Tags.ToListAsync();
     }
 
-    public async Task<Tag?> UpdateTagAsync(Tag tag)
+    public async Task<Tag?> UpdateTagAsync(int tagId, Tag tag)
     {
-      var existingTag = await _context.Tags.FindAsync(tag.TagId);
+      var existingTag = await _context.Tags.FindAsync(tagId);
       if (existingTag == null) 
       {
         return null;

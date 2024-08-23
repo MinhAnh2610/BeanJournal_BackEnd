@@ -69,10 +69,10 @@ namespace Services
       return entryResponse.Select(x => x.ToDiaryEntryDto()).ToList();
     }
 
-    public async Task<DiaryEntryDTO?> UpdateDiaryEntry(DiaryEntryUpdateDTO entry)
+    public async Task<DiaryEntryDTO?> UpdateDiaryEntry(int entryId, DiaryEntryUpdateDTO entry)
     {
       var entryModel = entry.ToDiaryEntryFromUpdate();
-      var entryResponse = await _entryRepository.UpdateDiaryEntryAsync(entryModel);
+      var entryResponse = await _entryRepository.UpdateDiaryEntryAsync(entryId, entryModel);
       if (entryResponse == null)
       {
         return null;

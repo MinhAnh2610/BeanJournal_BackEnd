@@ -12,7 +12,8 @@ namespace RepositoryContracts
     Task<MediaAttachment> CreateMediaAttachmentAsync(MediaAttachment mediaAttachment);
     Task<ICollection<MediaAttachment>?> GetMediaAttachmentsAsync();
     Task<MediaAttachment?> GetMediaAttachmentByIdAsync(int id);
-    Task<MediaAttachment?> UpdateMediaAttachmentAsync(MediaAttachment mediaAttachment);
+    Task<ICollection<MediaAttachment>?> GetMediaAttachmentsByUserAsync(string id);
+    Task<MediaAttachment?> UpdateMediaAttachmentAsync(int mediaId, MediaAttachment mediaAttachment);
     Task<MediaAttachment?> DeleteMediaAttachmentAsync(int id);
   }
 }

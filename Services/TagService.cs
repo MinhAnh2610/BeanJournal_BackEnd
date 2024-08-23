@@ -1,6 +1,7 @@
 ﻿using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Tag;
+using ServiceContracts.Mapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,29 +18,52 @@ namespace Services
       _tagRepository = tagRepository;
     }
 
-    public Task<TagDTO> AddTag(TagAddDTO tag)
+    public async Task<TagDTO> AddTag(TagAddDTO tag)
     {
-      throw new NotImplementedException();
+      var tagModel = tag.ToTagFromAdd();
+      var tagResponse = await _tagRepository.CreateTagAsync(tagModel);
+      return tagResponse.ToTagDto();
     }
 
-    public Task<TagDTO?> DeleteTag(int id)
+    public async Task<TagDTO?> DeleteTag(int id)
     {
-      throw new NotImplementedException();
+      var tagReponse = await _tagRepository.DeleteTagAsync(id);
+      if (tagReponse == null)
+      {
+        return null;
+      }
+      return tagReponse.ToTagDto();
     }
 
-    public Task<ICollection<TagDTO>?> GetAllTags()
+    public async Task<ICollection<TagDTO>?> GetAllTags()
     {
-      throw new NotImplementedException();
+      var tagResponses = await _tagRepository.GetTagsAsync();
+      if (tagResponses == null)
+      {
+        return null;
+      }
+      return tagResponses.Select(x => x.ToTagDto()).ToList();
     }
 
-    public Task<TagDTO?> GetTagById(int id)
+    public async Task<TagDTO?> GetTagById(int id)
     {
-      throw new NotImplementedException();
+      var tagResponse = await _tagRepository.GetTagByIdAsync(id);
+      if (tagResponse == null)
+      {
+        return null;
+      }
+      return tagResponse.ToTagDto();
     }
 
-    public Task<TagDTO?> UpdateTag(TagUpdateDTO tag)
+    public async Task<TagDTO?> UpdateTag(int tagId, TagUpdateDTO tag)
     {
-      throw new NotImplementedException();
+      var tagModel = tag.ToTagFromUpdate();
+      var tagResponse = await _tagRepository.UpdateTagAsync(tagId, tagModel);
+      if (tagResponse == null)
+      {
+        return null;
+      }
+      return tagResponse.ToTagDto();
     }
   }
 }

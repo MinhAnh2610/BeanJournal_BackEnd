@@ -45,7 +45,8 @@ namespace Repositories
     {
       return await _context.DiaryEntries
         .Include(x => x.User)
-        .Include(x => x.EntryTags)
+        .Include(x => x.EntryTags)!
+          .ThenInclude(x => x.Tag)
         .Where(x => x.UserId == id)
         .ToListAsync();
     }
@@ -64,9 +65,9 @@ namespace Repositories
         .FirstOrDefaultAsync(x => x.EntryId == id);
     }
 
-    public async Task<DiaryEntry?> UpdateDiaryEntryAsync(DiaryEntry entry)
+    public async Task<DiaryEntry?> UpdateDiaryEntryAsync(int entryId, DiaryEntry entry)
     {
-      var existingEntry = await _context.DiaryEntries.FindAsync(entry.EntryId);
+      var existingEntry = await _context.DiaryEntries.FindAsync(entryId);
       if (existingEntry == null)
       {
         return null;

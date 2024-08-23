@@ -1,6 +1,7 @@
 ﻿using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.MediaAttachment;
+using ServiceContracts.Mapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,14 +27,34 @@ namespace Services
       throw new NotImplementedException();
     }
 
-    public Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachments()
+    public async Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachments()
     {
-      throw new NotImplementedException();
+      var mediaAttachmentResponses = await _mediaAttachmentRepository.GetMediaAttachmentsAsync();
+      if (mediaAttachmentResponses == null)
+      {
+        return null;
+      }
+      return mediaAttachmentResponses.Select(x => x.ToMediaAttachmentDto()).ToList();
     }
 
-    public Task<MediaAttachmentDTO?> GetMediaAttachmentById(int id)
+    public async Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachmentsByUser(string id)
     {
-      throw new NotImplementedException();
+      var mediaAttachmentResponses = await _mediaAttachmentRepository.GetMediaAttachmentsByUserAsync(id);
+      if (mediaAttachmentResponses == null)
+      {
+        return null;
+      }
+      return mediaAttachmentResponses.Select(x => x.ToMediaAttachmentDto()).ToList();
+    }
+
+    public async Task<MediaAttachmentDTO?> GetMediaAttachmentById(int id)
+    {
+      var mediaAttachmentResponse = await _mediaAttachmentRepository.GetMediaAttachmentByIdAsync(id);
+      if (mediaAttachmentResponse == null)
+      {
+        return null;
+      }
+      return mediaAttachmentResponse.ToMediaAttachmentDto();
     }
 
     public Task<MediaAttachmentDTO?> UpdateMediaAttachment(MediaAttachmentUpdateDTO mediaAttachment)

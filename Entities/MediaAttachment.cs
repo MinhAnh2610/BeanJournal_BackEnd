@@ -15,7 +15,7 @@ namespace Entities
     public int MediaId { get; set; }
     public int EntryId { get; set; }
     [ForeignKey("EntryId")]
-    public DiaryEntry? DiaryEntry { get; set; }
+    public DiaryEntry? Entry { get; set; }
     [StringLength(255)]
     public string FilePath { get; set; } = string.Empty;
     [StringLength(50)]

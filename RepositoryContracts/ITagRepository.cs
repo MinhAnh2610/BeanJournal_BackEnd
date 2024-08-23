@@ -12,7 +12,7 @@ namespace RepositoryContracts
     Task<Tag> CreateTagAsync(Tag tag);
     Task<ICollection<Tag>?> GetTagsAsync();
     Task<Tag?> GetTagByIdAsync(int id);
-    Task<Tag?> UpdateTagAsync(Tag tag);
+    Task<Tag?> UpdateTagAsync(int tagId, Tag tag);
     Task<Tag?> DeleteTagAsync(int id);
   }
 }

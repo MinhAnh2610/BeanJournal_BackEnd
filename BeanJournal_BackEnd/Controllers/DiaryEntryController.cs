@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,18 +10,34 @@ using System.Security.Claims;
 
 namespace BeanJournal_BackEnd.Controllers
 {
+  /// <summary>
+  /// Diary Entry APIs
+  /// </summary>
   [Route("api/[controller]")]
   [ApiController]
   [Authorize]
   public class DiaryEntryController : ControllerBase
   {
     private readonly IDiaryEntryService _entryService;
-    public DiaryEntryController(IDiaryEntryService entryService)
+    private readonly UserManager<ApplicationUser> _userManager;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entryService"></param>
+    /// <param name="userManager"></param>
+    public DiaryEntryController(IDiaryEntryService entryService,
+                                UserManager<ApplicationUser> userManager)
     {
       _entryService = entryService;
+      _userManager = userManager;
     }
 
+    /// <summary>
+    /// Get all diary entries from all users
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAll()
     {
       if (!ModelState.IsValid)
@@ -35,15 +52,20 @@ namespace BeanJournal_BackEnd.Controllers
       return Ok(entries);
     }
 
+    /// <summary>
+    /// Get all diary entries from the authenticated user
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("user-diary")]
-    public async Task<IActionResult> GetByUserId()
+    public async Task<IActionResult> GetByUser()
     {
       if (!ModelState.IsValid)
       {
         return BadRequest(ModelState);
       }
-      string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-      var entries = await _entryService.GetDiaryEntryByUserId(userId);
+      //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+      var user = await _userManager.GetUserAsync(User);
+      var entries = await _entryService.GetDiaryEntryByUserId(user!.Id);
       if (entries == null)
       {
         return NoContent();
@@ -51,8 +73,14 @@ namespace BeanJournal_BackEnd.Controllers
       return Ok(entries);
     }
 
+    /// <summary>
+    /// Get a specific diary entry based on its Id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet]
     [Route("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
       if (!ModelState.IsValid)
@@ -67,6 +95,11 @@ namespace BeanJournal_BackEnd.Controllers
       return Ok(entry);
     }
 
+    /// <summary>
+    /// Get a specific diary entry of an authenticated user based on its date
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
     [HttpGet]
     [Route("{date:datetime}")]
     public async Task<IActionResult> GetByDate([FromRoute] DateTime date)
@@ -83,6 +116,11 @@ namespace BeanJournal_BackEnd.Controllers
       return Ok(entry);
     }
 
+    /// <summary>
+    /// Create a new diary entry
+    /// </summary>
+    /// <param name="entryAddDto"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] DiaryEntryAddDTO entryAddDto)
     {
@@ -91,20 +129,31 @@ namespace BeanJournal_BackEnd.Controllers
         return BadRequest(ModelState);
       }
       var entryResponse = await _entryService.AddDiaryEntry(entryAddDto);
-      return CreatedAtAction(nameof(GetById), new { entryId = entryResponse.EntryId }, entryResponse);
+      return CreatedAtAction(nameof(GetById), new { id = entryResponse.EntryId }, entryResponse);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] DiaryEntryUpdateDTO entryUpdateDto)
+    /// <summary>
+    /// Update a diary entry
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="entryUpdateDto"></param>
+    /// <returns></returns>
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] DiaryEntryUpdateDTO entryUpdateDto)
     {
       if (!ModelState.IsValid)
       {
         return BadRequest(ModelState);
       }
-      var entryResponse = await _entryService.UpdateDiaryEntry(entryUpdateDto);
+      var entryResponse = await _entryService.UpdateDiaryEntry(id, entryUpdateDto);
       return Ok(entryResponse);
     }
 
+    /// <summary>
+    /// Delete a diary entry
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpDelete]
     [Route("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
