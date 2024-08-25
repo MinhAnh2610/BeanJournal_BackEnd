@@ -62,5 +62,5 @@ jobs:
         with:
           app-name: 'beanjournal'
           slot-name: 'Production'
-          package: ${{runner.workspace}}/myapp
+          package: .
           
