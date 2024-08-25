@@ -1,4 +1,5 @@
-﻿using ServiceContracts.DTO.MediaAttachment;
+﻿using CloudinaryDotNet.Actions;
+using ServiceContracts.DTO.MediaAttachment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,13 @@ namespace ServiceContracts
 {
   public interface IMediaAttachmentService
   {
-    Task<MediaAttachmentDTO> AddMediaAttachment(MediaAttachmentAddDTO mediaAttachment);
+    Task<ImageUploadResult> UploadImage(MediaAttachmentAddDTO mediaAttachment);
+    Task<ICollection<MediaAttachmentDTO>?> AddMediaAttachment(List<MediaAttachmentAddDTO> mediaAttachmentAddDtos, int entryId);
+    Task<ICollection<MediaAttachmentDTO>?> UpdateMediaAttachment(List<MediaAttachmentAddDTO> mediaAttachmentUpdateDTOs, int entryId);
     Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachments();
     Task<MediaAttachmentDTO?> GetMediaAttachmentById(int id);
-    Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachmentsByUser(string id);
-    Task<MediaAttachmentDTO?> UpdateMediaAttachment(MediaAttachmentUpdateDTO mediaAttachment);
+    Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachmentsByUser(string userId);
+    Task<DeletionResult> DeleteImage(string pulicId);
     Task<MediaAttachmentDTO?> DeleteMediaAttachment(int id);
   }
 }

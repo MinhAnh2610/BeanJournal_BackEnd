@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using ServiceContracts.DTO.MediaAttachment;
 
 namespace ServiceContracts.DTO.DiaryEntry
 {
@@ -17,6 +19,6 @@ namespace ServiceContracts.DTO.DiaryEntry
     [StringLength(20)]
     public string Mood { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public ICollection<EntryTag>? Tags { get; set; }
+    public ICollection<int>? Tags { get; set; }
   }
 }

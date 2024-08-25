@@ -17,6 +17,6 @@ namespace ServiceContracts.DTO.DiaryEntry
     [StringLength(20)]
     public string Mood { get; set; } = string.Empty;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
-    public ICollection<EntryTag>? Tags { get; set; }
+    public ICollection<int>? Tags { get; set; }
   }
 }

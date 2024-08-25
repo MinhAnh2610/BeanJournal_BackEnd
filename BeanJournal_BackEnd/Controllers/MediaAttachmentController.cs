@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
+using ServiceContracts.DTO.MediaAttachment;
 
 namespace BeanJournal_BackEnd.Controllers
 {
@@ -87,6 +88,94 @@ namespace BeanJournal_BackEnd.Controllers
         return NoContent();
       }
       return Ok(mediaAttachmentResponses);
+    }
+
+    /// <summary>
+    /// Testing API for uploading an image
+    /// </summary>
+    /// <param name="mediaAttachmentAddDto"></param>
+    /// <returns></returns>
+    [HttpPost("image-upload-test")]
+    public async Task<IActionResult> UploadTest([FromForm] MediaAttachmentAddDTO mediaAttachmentAddDto)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+      var result = await _mediaAttachmentService.UploadImage(mediaAttachmentAddDto);
+      return Ok(result);
+    }
+
+    /// <summary>
+    /// Testing API for deleting an image
+    /// </summary>
+    /// <param name="publicId"></param>
+    /// <returns></returns>
+    [HttpDelete("image-delete-test/{publicId}")]
+    public async Task<IActionResult> DeleteTest([FromRoute] string publicId)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+      var result = await _mediaAttachmentService.DeleteImage(publicId);
+      return Ok(result);
+    }
+
+    /// <summary>
+    /// Upload a list of media attachments from a diary entry
+    /// </summary>
+    /// <param name="entryId"></param>
+    /// <param name="mediaAttachmentList"></param>
+    /// <returns></returns>
+    [HttpPost("{entryId}/media")]
+    public async Task<IActionResult> Create([FromRoute] int entryId, [FromForm] List<IFormFile> mediaAttachmentList)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+
+      var result = await _mediaAttachmentService
+        .AddMediaAttachment(mediaAttachmentList
+        .Select(x => new MediaAttachmentAddDTO()
+        {
+          File = x
+        }).ToList(), entryId);
+      if (result == null)
+      {
+        return BadRequest("One of the files you're trying you upload are not valid");
+      }
+
+      return Ok("Media upload successfully");
+    }
+
+    /// <summary>
+    /// Update the list for media attachments for a diary entry
+    /// </summary>
+    /// <param name="entryId"></param>
+    /// <param name="mediaAttachmentList"></param>
+    /// <returns></returns>
+    [HttpPut("{entryId}/media")]
+    public async Task<IActionResult> Update([FromRoute] int entryId, [FromForm] List<IFormFile> mediaAttachmentList)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+
+      var result = await _mediaAttachmentService
+        .UpdateMediaAttachment(mediaAttachmentList
+        .Select(x => new MediaAttachmentAddDTO()
+        {
+          File = x
+        }).ToList(), entryId);
+      if (result == null)
+      {
+        return BadRequest("One of the files you're trying you upload are not valid");
+      }
+
+      return Ok("Media upload successfully");
     }
 
     /// <summary>

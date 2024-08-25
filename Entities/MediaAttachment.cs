@@ -16,6 +16,10 @@ namespace Entities
     public int EntryId { get; set; }
     [ForeignKey("EntryId")]
     public DiaryEntry? Entry { get; set; }
+    public string PublicId { get; set; } = string.Empty;
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public long Bytes { get; set; }
     [StringLength(255)]
     public string FilePath { get; set; } = string.Empty;
     [StringLength(50)]

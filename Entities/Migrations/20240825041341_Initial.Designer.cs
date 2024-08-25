@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240822095747_Initial")]
+    [Migration("20240825041341_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -105,13 +105,13 @@ namespace Entities.Migrations
                             Id = "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "7c9f577f-8a87-4c15-9306-b51848c2ac3b",
-                            CreatedAt = new DateTime(2024, 8, 22, 16, 57, 45, 819, DateTimeKind.Local).AddTicks(8520),
+                            CreatedAt = new DateTime(2024, 8, 25, 11, 13, 41, 220, DateTimeKind.Local).AddTicks(992),
                             Email = "soybean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "SOYBEAN@EXAMPLE.COM",
                             NormalizedUserName = "SOYBEAN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMu+LydDLTTvQci/f5hBc1WTMehHnsIXNl/3lwWChO/4WkXxQpA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOW0IfR8n6vCHKcNdY3HJvzBE5qQh3SGhdk2NYvPvV4PrVejmjHwjLHBtfTGf28PCw==",
                             PhoneNumberConfirmed = false,
                             RefreshToken = "",
                             RefreshTokenExpirationDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -124,19 +124,38 @@ namespace Entities.Migrations
                             Id = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "d81e6a9a-d634-4460-a5fb-c9d6605c0338",
-                            CreatedAt = new DateTime(2024, 8, 22, 16, 57, 45, 819, DateTimeKind.Local).AddTicks(8854),
+                            CreatedAt = new DateTime(2024, 8, 25, 11, 13, 41, 220, DateTimeKind.Local).AddTicks(1376),
                             Email = "greenbean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "GREENBEAN@EXAMPLE.COM",
                             NormalizedUserName = "GREENBEAN",
-                            PasswordHash = "AQAAAAEAACcQAAAAED7fJ3s5wEK9jFVlE+Se3dDwH8jZV6cR9yL5B5g3rY4Vpxfd5vQg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDuk/UAy3FFGicBryuMBGvLdlSjgQk8yjo3tXXJnjcXC+oO4L10z/xxllGuKuDJM7Q==",
                             PhoneNumberConfirmed = false,
                             RefreshToken = "",
                             RefreshTokenExpirationDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "74b0d82f-2ef7-4c9b-92cb-8a4e94db1f3d",
                             TwoFactorEnabled = false,
                             UserName = "greenbean"
+                        },
+                        new
+                        {
+                            Id = "defd8035-ca84-4013-9f1d-1ae00af310b4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5d73f102-7151-4b61-9ebf-06b963b8cd8b",
+                            CreatedAt = new DateTime(2024, 8, 25, 11, 13, 41, 220, DateTimeKind.Local).AddTicks(1455),
+                            Email = "minhanh26102004@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MINHANH26102004@GMAIL.COM",
+                            NormalizedUserName = "MINHANH",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF1C5OJZKke9FZG7yE/6PV1UCtvpkedJLuEkNdqw0LmFDBbS0im5ogkNVaz95LlYbQ==",
+                            PhoneNumberConfirmed = false,
+                            RefreshToken = "",
+                            RefreshTokenExpirationDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "7EFGZ3VVT5HYJLWQHLEWVRPUCRJZNSD7",
+                            TwoFactorEnabled = false,
+                            UserName = "minhanh"
                         });
                 });
 
@@ -251,6 +270,9 @@ namespace Entities.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MediaId"));
 
+                    b.Property<long>("Bytes")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -267,6 +289,16 @@ namespace Entities.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
+
                     b.HasKey("MediaId");
 
                     b.HasIndex("EntryId");
@@ -277,18 +309,26 @@ namespace Entities.Migrations
                         new
                         {
                             MediaId = 1,
+                            Bytes = 0L,
                             CreatedAt = new DateTime(2024, 8, 10, 9, 20, 0, 0, DateTimeKind.Unspecified),
                             EntryId = 1,
                             FilePath = "/media/park-photo.jpg",
-                            FileType = "image/jpeg"
+                            FileType = "image/jpeg",
+                            Height = 0,
+                            PublicId = "",
+                            Width = 0
                         },
                         new
                         {
                             MediaId = 2,
+                            Bytes = 0L,
                             CreatedAt = new DateTime(2024, 8, 11, 20, 45, 0, 0, DateTimeKind.Unspecified),
                             EntryId = 2,
                             FilePath = "/media/thoughts-audio.mp3",
-                            FileType = "audio/mpeg"
+                            FileType = "audio/mpeg",
+                            Height = 0,
+                            PublicId = "",
+                            Width = 0
                         });
                 });
 
@@ -536,13 +576,13 @@ namespace Entities.Migrations
 
             modelBuilder.Entity("Entities.MediaAttachment", b =>
                 {
-                    b.HasOne("Entities.DiaryEntry", "DiaryEntry")
+                    b.HasOne("Entities.DiaryEntry", "Entry")
                         .WithMany("MediaAttachments")
                         .HasForeignKey("EntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DiaryEntry");
+                    b.Navigation("Entry");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

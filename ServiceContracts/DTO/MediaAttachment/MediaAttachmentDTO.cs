@@ -11,8 +11,10 @@ namespace ServiceContracts.DTO.MediaAttachment
   public class MediaAttachmentDTO
   {
     public int MediaId { get; set; }
-    public string UserName { get; set; } = string.Empty;
-    public string EntryTitle { get; set; } = string.Empty;
+    public string PublicId { get; set; } = string.Empty;
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public long Bytes { get; set; }
     public string FilePath { get; set; } = string.Empty;
     public string FileType { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.Now;

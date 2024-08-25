@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Repositories;
 using RepositoryContracts;
 using ServiceContracts;
+using ServiceContracts.Helpers;
 using Services;
 using System.Reflection;
 using System.Text;
@@ -163,6 +164,9 @@ builder.Services.AddAuthorization(options =>
 // Add Transient to Token Service
 builder.Services.AddTransient<ITokenService, TokenService>();
 
+// Add Scoped to Cloudinary Services
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
 // Add Scoped to Inversion of Control (IoC container) for Services
 builder.Services.AddScoped<IDiaryEntryService, DiaryEntryService>();
 builder.Services.AddScoped<IMediaAttachmentService, MediaAttachmentService>();
@@ -173,6 +177,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDiaryEntryRepository, DiaryEntryRepository>();
 builder.Services.AddScoped<IMediaAttachmentRepository, MediaAttachmentRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IEntryTagRepository, EntryTagRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();

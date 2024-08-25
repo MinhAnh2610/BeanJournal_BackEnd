@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 using ServiceContracts.DTO.DiaryEntry;
+using ServiceContracts.DTO.MediaAttachment;
+using Services;
+using System.Collections.ObjectModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -18,7 +21,7 @@ namespace BeanJournal_BackEnd.Controllers
   [Authorize]
   public class DiaryEntryController : ControllerBase
   {
-    private readonly IDiaryEntryService _entryService;
+    private readonly IDiaryEntryService  _entryService;
     private readonly UserManager<ApplicationUser> _userManager;
     /// <summary>
     /// 
@@ -128,7 +131,9 @@ namespace BeanJournal_BackEnd.Controllers
       {
         return BadRequest(ModelState);
       }
-      var entryResponse = await _entryService.AddDiaryEntry(entryAddDto);
+      var user = await _userManager.GetUserAsync(User);
+      var entryResponse = await _entryService.AddDiaryEntry(entryAddDto, user!.Id);
+
       return CreatedAtAction(nameof(GetById), new { id = entryResponse.EntryId }, entryResponse);
     }
 
@@ -145,7 +150,9 @@ namespace BeanJournal_BackEnd.Controllers
       {
         return BadRequest(ModelState);
       }
-      var entryResponse = await _entryService.UpdateDiaryEntry(id, entryUpdateDto);
+      var user = await _userManager.GetUserAsync(User);
+      var entryResponse = await _entryService.UpdateDiaryEntry(id, entryUpdateDto, user!.Id);
+
       return Ok(entryResponse);
     }
 

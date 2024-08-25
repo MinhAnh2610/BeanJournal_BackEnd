@@ -51,6 +51,16 @@ namespace Repositories
         .ToListAsync();
     }
 
+    public async Task<ICollection<MediaAttachment>?> GetMediaAttachmentsByEntryAsync(int entryId)
+    {
+      var medias = await _context.MediaAttachments.Where(x => x.EntryId == entryId).ToListAsync();
+      if (medias == null)
+      {
+        return null;
+      }
+      return medias;
+    }
+
     public async Task<ICollection<MediaAttachment>?> GetMediaAttachmentsByUserAsync(string id)
     {
       return await _context.MediaAttachments

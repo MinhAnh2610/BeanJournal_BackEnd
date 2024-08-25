@@ -38,6 +38,7 @@ namespace Repositories
         .Include(x => x.User)
         .Include(x => x.EntryTags)!
           .ThenInclude(x => x.Tag)
+        .Include(x => x.MediaAttachments)
         .ToListAsync();
     }
 
@@ -47,6 +48,7 @@ namespace Repositories
         .Include(x => x.User)
         .Include(x => x.EntryTags)!
           .ThenInclude(x => x.Tag)
+        .Include(x => x.MediaAttachments)
         .Where(x => x.UserId == id)
         .ToListAsync();
     }
