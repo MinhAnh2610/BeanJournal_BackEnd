@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{runner.workspace}}/myapp
 
   deploy:
     runs-on: windows-latest
@@ -62,5 +62,5 @@ jobs:
         with:
           app-name: 'beanjournal'
           slot-name: 'Production'
-          package: .
+          package: ${{runner.workspace}}/myapp
           
