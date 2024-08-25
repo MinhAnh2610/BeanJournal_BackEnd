@@ -29,6 +29,7 @@ namespace BeanJournal_BackEnd.Controllers
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> GetAll()
     {
       if (!ModelState.IsValid)
