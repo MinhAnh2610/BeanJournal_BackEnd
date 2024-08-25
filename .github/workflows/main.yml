@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  Publish:
     runs-on: windows-latest
 
     steps:
@@ -27,7 +27,7 @@ jobs:
       - name: Build with dotnet
         run: dotnet build ./BeanJournal_BackEnd.sln --configuration Release --no-restore
 
-      - name: dotnet publish
+      - name: Publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
