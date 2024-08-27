@@ -15,6 +15,10 @@ namespace Entities
     public int TagId { get; set; }
     [StringLength(50)]
     public string Name { get; set; } = string.Empty;
+    public string ImagePublicId { get; set; } = string.Empty;
+    public string IconPublicId { get; set; } = string.Empty;
+    public string ImageUrl { get; set; } = string.Empty;
+    public string IconUrl { get; set; } = string.Empty;
     public ICollection<EntryTag>? EntryTags { get; set; }
   }
 }
