@@ -180,6 +180,18 @@ builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IEntryTagRepository, EntryTagRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+// Add Cors policy
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("AllowSpecificOrigin",
+      builder =>
+      {
+        builder.WithOrigins("http://localhost:5173")
+                 .AllowAnyHeader()
+                 .AllowAnyMethod();
+      });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -192,10 +204,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-app.UseCors(builder => { 
-  builder.AllowAnyHeader();
-  builder.AllowAnyMethod();
-});
+app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthentication();
 app.UseAuthorization();
