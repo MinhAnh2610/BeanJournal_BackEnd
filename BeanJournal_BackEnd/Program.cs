@@ -186,7 +186,7 @@ builder.Services.AddCors(options =>
   options.AddPolicy("AllowSpecificOrigin",
       builder =>
       {
-        builder.WithOrigins("http://localhost:5173", "https://bean-journal-front-end.vercel.app/")
+        builder.WithOrigins("http://localhost:5173", "https://bean-journal-front-end.vercel.app")
                  .AllowAnyHeader()
                  .AllowAnyMethod();
       });
