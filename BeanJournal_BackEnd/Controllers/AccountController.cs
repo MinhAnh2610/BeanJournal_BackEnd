@@ -22,6 +22,7 @@ namespace BeanJournal_BackEnd.Controllers
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly ITokenService _tokenService;
+    private readonly IEmailService _emailService;
 
     /// <summary>
     /// 
@@ -30,15 +31,18 @@ namespace BeanJournal_BackEnd.Controllers
     /// <param name="signInManager"></param>
     /// <param name="roleManager"></param>
     /// <param name="tokenService"></param>
+    /// <param name="emailService"></param>
     public AccountController(UserManager<ApplicationUser> userManager,
                              SignInManager<ApplicationUser> signInManager,
                              RoleManager<ApplicationRole> roleManager,
-                             ITokenService tokenService)
+                             ITokenService tokenService,
+                             IEmailService emailService)
     {
       _userManager = userManager;
       _signInManager = signInManager;
       _roleManager = roleManager;
       _tokenService = tokenService;
+      _emailService = emailService;
     }
 
     /// <summary>
@@ -236,6 +240,71 @@ namespace BeanJournal_BackEnd.Controllers
       await _userManager.UpdateAsync(user);
 
       return Ok(authentication);
+    }
+
+    /// <summary>
+    /// Testing email service
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("test-email")]
+    public async Task<IActionResult> EmailTest()
+    {
+      var htmlContent = @"
+                <!DOCTYPE html>
+                    <html lang=""en"">
+                    <head>
+                        <meta charset=""UTF-8"">
+                        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                        <title>Password Reset Request</title>
+                        <style>
+                            .overlay {
+                                background-color: rgba(255, 255, 255, 0.7); /* White with 70% opacity */
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                z-index: 1;
+                            }
+                            .content-container {
+                                position: relative;
+                                z-index: 2;
+                            }
+                        </style>
+                    </head>
+                    <body style=""margin: 0; font-family: Arial, sans-serif; background-color: #f9f9f9;"">
+                        <div style=""max-width: 800px; margin: auto; background-color: white; padding: 20px"">
+                            <div style=""text-align: center; padding: 20px; background-color: white;"">
+                                <div style=""display: flex; justify-content: center; align-items: center; text-align: center; height: 80px;"">
+                                    <img src=""https://res.cloudinary.com/dp34so8og/image/upload/v1725983655/beanjournallogo_dyyzat.png"" alt=""Paw"" style=""width: 80px; height: auto; margin-right: 16px;"">
+                                    <span style=""font-size: 3.5rem; font-weight: 600; color: #DB2777;"">Pet88</span>
+                                </div>
+                            </div>
+                            <div class=""overlay""></div>
+                            <div style=""content-container padding: 20px;"">
+                                <h2 style=""font-size: 2rem; font-weight: bold;"">Password Reset Request</h2>
+                                <p style=""font-size: 1rem;"">Dear User,</p>
+                                <p style=""font-size: 1rem;"">You requested to reset your password. Please click the button below to reset your password:</p>
+                                <p style=""font-size: 1rem;"">To ensure the security of your account, please note the following:</p>
+                                <ul style=""font-size: 1rem; line-height: 1.5;"">
+                                    <li>The reset link is valid for only 24 hours.</li>
+                                    <li>If you did not request a password reset, please ignore this email or contact our support team.</li>
+                                    <li>Do not share this email or the reset link with anyone.</li>
+                                </ul>
+                                <div style=""text-align: center; margin: 20px 0;"">
+                                    <a href=""https://example.com/reset-password?token=yourtoken"" style=""display: inline-block; background-color: #DB2777; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;"">Reset Password</a>
+                                </div>
+                                <p style=""font-size: 1rem;"">Thank you for using our services. We value your security and are here to help if you need any assistance.</p>
+                                <p style=""font-size: 1rem;"">Best regards,<br>Your Company Support Team</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                    ";
+      var message = new Message(["soybean26102004@gmail.com"], "Test", htmlContent);
+
+      await _emailService.SendEmail(message);
+      return Ok(message);
     }
   }
 }
