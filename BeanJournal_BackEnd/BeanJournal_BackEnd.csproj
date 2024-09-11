@@ -40,4 +40,8 @@
     <Folder Include="Extensions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\test.html" />
+  </ItemGroup>
+
 </Project>
