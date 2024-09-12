@@ -53,6 +53,11 @@ namespace Repositories
         return null;
       }
       existingTag.Name = tag.Name;
+      existingTag.IconPublicId = tag.IconPublicId;
+      existingTag.ImagePublicId = tag.ImagePublicId;
+      existingTag.IconUrl = tag.IconUrl;
+      existingTag.ImageUrl = tag.ImageUrl;
+
       await _context.SaveChangesAsync();
       return existingTag;
     }

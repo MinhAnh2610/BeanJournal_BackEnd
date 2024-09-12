@@ -16,7 +16,7 @@ namespace ServiceContracts
     Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachments();
     Task<MediaAttachmentDTO?> GetMediaAttachmentById(int id);
     Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachmentsByUser(string userId);
-    Task<DeletionResult> DeleteImage(string pulicId);
+    Task<DeletionResult> DeleteImage(string publicId);
     Task<MediaAttachmentDTO?> DeleteMediaAttachment(int id);
   }
 }

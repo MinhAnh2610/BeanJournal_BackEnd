@@ -86,7 +86,7 @@ namespace BeanJournal_BackEnd.Controllers
     /// <param name="tagUpdateDto"></param>
     /// <returns></returns>
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] TagUpdateDTO tagUpdateDto)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] TagAddDTO tagUpdateDto)
     {
       if (!ModelState.IsValid)
       {

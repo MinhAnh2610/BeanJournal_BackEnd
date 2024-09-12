@@ -10,5 +10,9 @@ namespace ServiceContracts.DTO.Tag
   {
     public int TagId { get; set; }
     public string Name { get; set; } = string.Empty;
+    public string ImagePublicId { get; set; } = string.Empty;
+    public string IconPublicId { get; set; } = string.Empty;
+    public string ImageUrl { get; set; } = string.Empty;
+    public string IconUrl { get; set; } = string.Empty;
   }
 }
