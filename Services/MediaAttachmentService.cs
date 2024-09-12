@@ -54,9 +54,9 @@ namespace Services
       return uploadResult;
     }
 
-    public async Task<DeletionResult> DeleteImage(string pulicId)
+    public async Task<DeletionResult> DeleteImage(string publicId)
     {
-      var deleteParams = new DeletionParams(pulicId);
+      var deleteParams = new DeletionParams(publicId);
       var result = await _cloudinary.DestroyAsync(deleteParams);
 
       return result;
