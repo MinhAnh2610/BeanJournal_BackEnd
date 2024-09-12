@@ -69,7 +69,7 @@ namespace BeanJournal_BackEnd.Controllers
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] TagAddDTO tagAddDto)
+    public async Task<IActionResult> Create([FromForm] TagAddDTO tagAddDto)
     {
       if (!ModelState.IsValid)
       {
@@ -86,7 +86,7 @@ namespace BeanJournal_BackEnd.Controllers
     /// <param name="tagUpdateDto"></param>
     /// <returns></returns>
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] TagAddDTO tagUpdateDto)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromForm] TagAddDTO tagUpdateDto)
     {
       if (!ModelState.IsValid)
       {
