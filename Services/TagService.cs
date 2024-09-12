@@ -2,6 +2,7 @@
 using CloudinaryDotNet.Actions;
 using Entities;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Tag;
@@ -63,6 +64,21 @@ namespace Services
 
     public async Task<TagDTO?> DeleteTag(int id)
     {
+      var existingTag = await _tagRepository.GetTagByIdAsync(id);
+      if (existingTag == null)
+      {
+        return null;
+      }
+
+      if (!existingTag.ImagePublicId.IsNullOrEmpty())
+      {
+        await DeleteImage(existingTag.ImagePublicId);
+      }
+      if (!existingTag.IconPublicId.IsNullOrEmpty())
+      {
+        await DeleteIcon(existingTag.IconPublicId);
+      }
+
       var tagReponse = await _tagRepository.DeleteTagAsync(id);
       if (tagReponse == null)
       {
@@ -100,8 +116,14 @@ namespace Services
         return null;
       }
 
-      await DeleteImage(existingTag.ImagePublicId);
-      await DeleteIcon(existingTag.IconPublicId);
+      if (!existingTag.ImagePublicId.IsNullOrEmpty())
+      {
+        await DeleteImage(existingTag.ImagePublicId);
+      }
+      if (!existingTag.IconPublicId.IsNullOrEmpty())
+      {
+        await DeleteIcon(existingTag.IconPublicId);
+      }
 
       var imageResult = await UploadImage(tag);
       var iconResult = await UploadIcon(tag);
@@ -141,7 +163,7 @@ namespace Services
         var uploadParams = new ImageUploadParams
         {
           File = new FileDescription(tag.Image.FileName, stream),
-          Transformation = new Transformation().Height(100).Width(100).Crop("fill").Gravity("face")
+          Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face")
         };
         uploadResult = await _cloudinary.UploadAsync(uploadParams);
       }
