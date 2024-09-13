@@ -24,25 +24,25 @@ var builder = WebApplication.CreateBuilder(args);
 // Add Logging
 builder.Services.AddLogging(loggingBuilder =>
 {
-  loggingBuilder.AddConsole();
-  loggingBuilder.AddDebug();
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
 });
 
 builder.Services.AddControllers(options =>
 {
-  // Add Authorization Policy
-  var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-  options.Filters.Add(new AuthorizeFilter(policy));
+    // Add Authorization Policy
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
 });
 
 // Add Json options to have loop reference and handle infinite looping
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-  options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
 });
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
-  options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -51,29 +51,29 @@ builder.Services.AddSwaggerGen();
 // Add Authorization to SwaggerGen
 builder.Services.AddSwaggerGen(options =>
 {
-  options.SwaggerDoc("v1", new OpenApiInfo()
-  {
-    Title = "BeanJournal API",
-    Version = "v1"
-  });
+    options.SwaggerDoc("v1", new OpenApiInfo()
+    {
+        Title = "BeanJournal API",
+        Version = "v1"
+    });
 
-  // Get the XML comments file path
-  var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-  var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    // Get the XML comments file path
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
-  // Include the XML comments file in Swagger
-  options.IncludeXmlComments(xmlPath);
+    // Include the XML comments file in Swagger
+    options.IncludeXmlComments(xmlPath);
 
-  options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-  {
-    In = ParameterLocation.Header,
-    Description = "Please enter a valid token",
-    Name = "Authorization",
-    Type = SecuritySchemeType.Http,
-    BearerFormat = "JWT",
-    Scheme = "Bearer"
-  });
-  options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
   {
     {
       new OpenApiSecurityScheme
@@ -92,18 +92,18 @@ builder.Services.AddSwaggerGen(options =>
 // Add Database Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 // Add Identity 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
-  options.Password.RequiredLength = 5;
-  options.Password.RequireNonAlphanumeric = false;
-  options.Password.RequireUppercase = false;
-  options.Password.RequireLowercase = false;
-  options.Password.RequireDigit = false;
-  options.Password.RequiredUniqueChars = 0;
+    options.Password.RequiredLength = 5;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequiredUniqueChars = 0;
 })
   .AddEntityFrameworkStores<ApplicationDbContext>()
   .AddDefaultTokenProviders()
@@ -113,46 +113,46 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 // Add Authentication
 builder.Services.AddAuthentication(options =>
 {
-  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-  options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
-  options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-  options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-  options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
 })
   .AddJwtBearer(options =>
 {
-  options.Events = new JwtBearerEvents
-  {
-    OnTokenValidated = context =>
+    options.Events = new JwtBearerEvents
     {
-      // Log the claims in the token
-      var claims = context.Principal!.Claims;
-      foreach (var claim in claims)
-      {
-        Console.WriteLine($"{claim.Type}: {claim.Value}");
-      }
+        OnTokenValidated = context =>
+        {
+            // Log the claims in the token
+            var claims = context.Principal!.Claims;
+            foreach (var claim in claims)
+            {
+                Console.WriteLine($"{claim.Type}: {claim.Value}");
+            }
 
-      return Task.CompletedTask;
-    },
-    OnAuthenticationFailed = context =>
+            return Task.CompletedTask;
+        },
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        }
+    };
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-      Console.WriteLine($"Authentication failed: {context.Exception.Message}");
-      return Task.CompletedTask;
-    }
-  };
-  options.TokenValidationParameters = new TokenValidationParameters
-  {
-    ValidateIssuer = true,
-    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-    ValidateAudience = true,
-    ValidAudience = builder.Configuration["Jwt:Audience"],
-    ValidateIssuerSigningKey = true,
-    IssuerSigningKey = new SymmetricSecurityKey
-    (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
-    ValidateLifetime = true,
-    ClockSkew = TimeSpan.Zero
-  };
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey
+      (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
 });
 
 // Add Authorization
@@ -185,16 +185,16 @@ builder.Services.AddScoped<IEntryTagRepository, EntryTagRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Add Cors policy
-builder.Services.AddCors(options =>
-{
-  options.AddPolicy("AllowSpecificOrigin",
-      builder =>
-      {
-        builder.WithOrigins("http://localhost:5173", "https://beanjournal.vercel.app")
-                 .AllowAnyHeader()
-                 .AllowAnyMethod();
-      });
-});
+//builder.Services.AddCors(options =>
+//{
+//  options.AddPolicy("AllowSpecificOrigin",
+//      builder =>
+//      {
+//        builder.WithOrigins("http://localhost:5173", "https://beanjournal.vercel.app")
+//                 .AllowAnyHeader()
+//                 .AllowAnyMethod();
+//      });
+//});
 
 var app = builder.Build();
 
@@ -210,7 +210,12 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-app.UseCors("AllowSpecificOrigin");
+//app.UseCors("AllowSpecificOrigin");
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    .SetIsOriginAllowed(origin => true));
 
 app.UseAuthentication();
 app.UseAuthorization();
