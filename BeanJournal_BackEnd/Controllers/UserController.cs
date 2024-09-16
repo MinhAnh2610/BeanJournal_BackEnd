@@ -45,6 +45,11 @@ namespace BeanJournal_BackEnd.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// Update user profile API
+        /// </summary>
+        /// <param name="userProfile"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> Update([FromForm] UserProfileUpdateDTO userProfile)
         {
