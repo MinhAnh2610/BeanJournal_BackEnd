@@ -46,28 +46,33 @@ namespace BeanJournal_BackEnd.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUserProfile([FromForm] UserProfileUpdateDTO userProfile)
+        public async Task<IActionResult> Update([FromForm] UserProfileUpdateDTO userProfile)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) 
-            { 
+            if (user == null)
+            {
                 return BadRequest("User not found");
             }
-            var existingUser = await _userManager.FindByNameAsync(user.UserName!);
+            var existingUser = await _userManager.FindByNameAsync(userProfile.Username!);
             var updatedUser = new UserProfileDTO();
             if (existingUser == null)
             {
-                updatedUser = await _userService.UpdateUserProfile(user);
+                updatedUser = await _userService.UpdateUserProfile(user, userProfile);   
+                return Ok(updatedUser);
             }
             else if (existingUser!.Id != user.Id)
-            {
+            { 
                 return BadRequest("Username already taken");
             }
             else
             {
-                updatedUser = await _userService.UpdateUserProfile(user);
+                updatedUser = await _userService.UpdateUserProfile(user, userProfile);
+                return Ok(updatedUser);
             }
-            return Ok(updatedUser);
         }
     }
 }

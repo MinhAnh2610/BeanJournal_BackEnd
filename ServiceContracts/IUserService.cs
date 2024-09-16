@@ -11,7 +11,7 @@ namespace ServiceContracts
 {
     public interface IUserService
     {
-        Task<UserProfileDTO> UpdateUserProfile(ApplicationUser user);
+        Task<UserProfileDTO> UpdateUserProfile(ApplicationUser user, UserProfileUpdateDTO userProfile);
         Task<ImageUploadResult> UploadImage(UserProfileUpdateDTO userProfile);
         Task<DeletionResult> DeleteImage(string publicId);
     }

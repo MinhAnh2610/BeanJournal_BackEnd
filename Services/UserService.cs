@@ -3,11 +3,13 @@ using CloudinaryDotNet.Actions;
 using Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Tag;
 using ServiceContracts.DTO.UserProfile;
 using ServiceContracts.Helpers;
+using ServiceContracts.Mapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,8 @@ namespace Services
     {
         private readonly IOptions<CloudinarySettings> _config;
         private readonly Cloudinary _cloudinary;
-        public UserService(IOptions<CloudinarySettings> config)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public UserService(IOptions<CloudinarySettings> config, UserManager<ApplicationUser> userManager)
         {
             var acc = new Account()
             {
@@ -31,10 +34,23 @@ namespace Services
 
             _config = config;
             _cloudinary = new Cloudinary(acc);
+            _userManager = userManager;
         }
-        public Task<UserProfileDTO> UpdateUserProfile(ApplicationUser user)
+        public async Task<UserProfileDTO> UpdateUserProfile(ApplicationUser user, UserProfileUpdateDTO userProfile)
         {
-            return null;
+            if (!user.ProfileImagePublicId.IsNullOrEmpty())
+            {
+                await DeleteImage(user.ProfileImagePublicId);
+            }
+
+            var imageResult = await UploadImage(userProfile);
+            user.UserName = userProfile.Username;
+            user.ProfileImagePublicId = imageResult.PublicId;
+            user.ProfileImageUrl = imageResult.Url.ToString();
+
+            await _userManager.UpdateAsync(user);
+
+            return user.ToUserProfile();
         }
 
         public async Task<ImageUploadResult> UploadImage(UserProfileUpdateDTO userProfile)
