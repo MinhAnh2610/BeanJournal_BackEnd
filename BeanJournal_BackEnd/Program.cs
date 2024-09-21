@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -13,6 +14,7 @@ using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.Helpers;
 using Services;
+using Services.Caching;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -173,9 +175,20 @@ builder.Services.AddSingleton(builder.Configuration.GetSection("EmailConfigurati
 // Add Scoped to Inversion of Control (IoC container) for Services
 builder.Services.AddScoped<IDiaryEntryService, DiaryEntryService>();
 builder.Services.AddScoped<IMediaAttachmentService, MediaAttachmentService>();
-builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<ITagService>(provider =>
+{
+    var tagService = provider.GetService<TagService>()!;
+
+    return new CachedTagService(
+        tagService,
+        provider.GetService<IMemoryCache>()!);
+});
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+// Add MemoryCache to the Services
+builder.Services.AddMemoryCache();
 
 // Add Scoped to Inversion of Control (IoC container) for Repositories
 builder.Services.AddScoped<IDiaryEntryRepository, DiaryEntryRepository>();
@@ -207,8 +220,6 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
-app.UseStaticFiles();
 
 //app.UseCors("AllowSpecificOrigin");
 app.UseCors(x => x
