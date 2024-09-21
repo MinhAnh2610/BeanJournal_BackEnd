@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Tag;
-using ServiceContracts.Helpers;
 using ServiceContracts.Mapper;
 using System;
 using System.Collections.Generic;

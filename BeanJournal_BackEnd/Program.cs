@@ -5,14 +5,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Repositories;
 using RepositoryContracts;
 using ServiceContracts;
-using ServiceContracts.Helpers;
 using Services;
+using Services.Caching;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -177,6 +178,13 @@ builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
+// Caching for Services
+builder.Services.Decorate<ITagService, CachedTagService>();
+builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
+
+// Add MemoryCache to the Services
+builder.Services.AddMemoryCache();
+
 // Add Scoped to Inversion of Control (IoC container) for Repositories
 builder.Services.AddScoped<IDiaryEntryRepository, DiaryEntryRepository>();
 builder.Services.AddScoped<IMediaAttachmentRepository, MediaAttachmentRepository>();
@@ -207,8 +215,6 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
-app.UseStaticFiles();
 
 //app.UseCors("AllowSpecificOrigin");
 app.UseCors(x => x
