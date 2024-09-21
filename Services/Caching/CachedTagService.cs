@@ -13,9 +13,9 @@ namespace Services.Caching
 {
     public class CachedTagService : ITagService
     {
-        private readonly TagService _decorator;
+        private readonly ITagService _decorator;
         private readonly IMemoryCache _memoryCache;
-        public CachedTagService(TagService decorator, IMemoryCache memoryCache)
+        public CachedTagService(ITagService decorator, IMemoryCache memoryCache)
         {
             _decorator = decorator;
             _memoryCache = memoryCache;

@@ -175,17 +175,12 @@ builder.Services.AddSingleton(builder.Configuration.GetSection("EmailConfigurati
 // Add Scoped to Inversion of Control (IoC container) for Services
 builder.Services.AddScoped<IDiaryEntryService, DiaryEntryService>();
 builder.Services.AddScoped<IMediaAttachmentService, MediaAttachmentService>();
-builder.Services.AddScoped<TagService>();
-builder.Services.AddScoped<ITagService>(provider =>
-{
-    var tagService = provider.GetService<TagService>()!;
-
-    return new CachedTagService(
-        tagService,
-        provider.GetService<IMemoryCache>()!);
-});
+builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+// Caching for Services
+builder.Services.Decorate<ITagService, CachedTagService>();
 
 // Add MemoryCache to the Services
 builder.Services.AddMemoryCache();
