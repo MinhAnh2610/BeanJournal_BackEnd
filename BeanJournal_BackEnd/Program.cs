@@ -180,6 +180,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Caching for Services
 builder.Services.Decorate<ITagService, CachedTagService>();
+builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
 
 // Add MemoryCache to the Services
 builder.Services.AddMemoryCache();
