@@ -1,10 +1,10 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Entities;
 using Microsoft.Extensions.Options;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.MediaAttachment;
-using ServiceContracts.Helpers;
 using ServiceContracts.Mapper;
 using System;
 using System.Collections.Generic;

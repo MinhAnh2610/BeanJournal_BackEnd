@@ -8,7 +8,6 @@ using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Tag;
 using ServiceContracts.DTO.UserProfile;
-using ServiceContracts.Helpers;
 using ServiceContracts.Mapper;
 using System;
 using System.Collections.Generic;

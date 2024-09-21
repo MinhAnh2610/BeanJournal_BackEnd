@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceContracts.Helpers
+namespace Entities
 {
   public class CloudinarySettings
   {
