@@ -1,6 +1,9 @@
-﻿using CloudinaryDotNet.Actions;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using ServiceContracts;
 using ServiceContracts.DTO.Tag;
 using System;
@@ -14,11 +17,11 @@ namespace Services.Caching
     public class CachedTagService : ITagService
     {
         private readonly ITagService _decorator;
-        private readonly IMemoryCache _memoryCache;
-        public CachedTagService(ITagService decorator, IMemoryCache memoryCache)
+        private readonly IDistributedCache _distributedCache;
+        public CachedTagService(ITagService decorator, IDistributedCache distributedCache)
         {
             _decorator = decorator;
-            _memoryCache = memoryCache;
+            _distributedCache = distributedCache;
         }
         public Task<TagDTO> AddTag(TagAddDTO tag)
         {
@@ -40,30 +43,59 @@ namespace Services.Caching
             return _decorator.DeleteTag(id);
         }
 
-        public Task<ICollection<TagDTO>?> GetAllTags()
+        public async Task<ICollection<TagDTO>?> GetAllTags()
         {
             string key = $"tag~";
 
-            return _memoryCache.GetOrCreateAsync(
-                key,
-                entry =>
-                {
-                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+            string? cachedTags = await _distributedCache.GetStringAsync(key);
 
-                    return _decorator.GetAllTags();
+            ICollection<TagDTO>? tags;
+
+            if (string.IsNullOrEmpty(cachedTags))
+            {
+                tags = await _decorator.GetAllTags();
+
+                if (tags is null)
+                {
+                    return tags;
+                }
+
+                await _distributedCache.SetStringAsync(key, JsonConvert.SerializeObject(tags));
+            }
+
+            tags = JsonConvert.DeserializeObject<ICollection<TagDTO>?>
+                (cachedTags!,
+                new JsonSerializerSettings
+                {
+                    ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
                 });
+
+            return tags;
         }
 
-        public Task<TagDTO?> GetTagById(int id)
+        public async Task<TagDTO?> GetTagById(int id)
         {
             string key = $"tag~{id}";
 
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+            string? cachedTags = await _distributedCache.GetStringAsync(key);
 
-                return _decorator.GetTagById(id);
-            });
+            TagDTO? tag;
+
+            if (string.IsNullOrEmpty(cachedTags))
+            {
+                tag = await _decorator.GetTagById(id);
+
+                if (tag is null)
+                {
+                    return tag;
+                }
+
+                await _distributedCache.SetStringAsync(key, JsonConvert.SerializeObject(tag));
+            }
+
+            tag = JsonConvert.DeserializeObject<TagDTO?>(cachedTags!);
+
+            return tag;
         }
 
         public Task<TagDTO?> UpdateTag(int tagId, TagAddDTO tag)
