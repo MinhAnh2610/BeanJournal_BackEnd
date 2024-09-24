@@ -178,18 +178,18 @@ builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-// Caching for Services
-builder.Services.Decorate<ITagService, CachedTagService>();
-builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
+//// Caching for Services
+//builder.Services.Decorate<ITagService, CachedTagService>();
+//builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
 
-// Add Stack Exchange Redis
-builder.Services.AddStackExchangeRedisCache(redisOptions =>
-{
-    string connection = builder.Configuration
-        .GetConnectionString("Redis")!;
+//// Add Stack Exchange Redis
+//builder.Services.AddStackExchangeRedisCache(redisOptions =>
+//{
+//    string connection = builder.Configuration
+//        .GetConnectionString("Redis")!;
 
-    redisOptions.Configuration = connection;
-});
+//    redisOptions.Configuration = connection;
+//});
 
 // Add MemoryCache to the Services
 builder.Services.AddMemoryCache();
