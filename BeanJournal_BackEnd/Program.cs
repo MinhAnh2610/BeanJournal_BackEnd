@@ -179,8 +179,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 //// Caching for Services
-//builder.Services.Decorate<ITagService, CachedTagService>();
-//builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
+builder.Services.Decorate<ITagService, CachedTagService>();
+builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
 
 //// Add Stack Exchange Redis
 //builder.Services.AddStackExchangeRedisCache(redisOptions =>
