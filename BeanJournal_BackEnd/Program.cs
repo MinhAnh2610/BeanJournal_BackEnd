@@ -182,15 +182,6 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.Decorate<ITagService, CachedTagService>();
 builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
 
-//// Add Stack Exchange Redis
-//builder.Services.AddStackExchangeRedisCache(redisOptions =>
-//{
-//    string connection = builder.Configuration
-//        .GetConnectionString("Redis")!;
-
-//    redisOptions.Configuration = connection;
-//});
-
 // Add MemoryCache to the Services
 builder.Services.AddMemoryCache();
 
@@ -211,7 +202,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 //                 .AllowAnyHeader()
 //                 .AllowAnyMethod();
 //      });
-//});
+//});   
 
 var app = builder.Build();
 
@@ -225,7 +216,6 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-//app.UseCors("AllowSpecificOrigin");
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
@@ -234,26 +224,6 @@ app.UseCors(x => x
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-//app.Use(async (context, next) =>
-//{
-//  var request = context.Request;
-//  var response = context.Response;
-
-//  Console.Out.WriteLine($"Request: {request.Method} {request.Path}");
-
-//  foreach (var header in request.Headers)
-//  {
-//    Console.WriteLine($"Header: {header.Key}: {header.Value}");
-//  }
-
-//  var authHeader = context.Request.Headers["Authorization"].ToString();
-//  Console.WriteLine($"Authorization Header: {authHeader}");
-
-//  await next();
-
-//  Console.WriteLine($"Response: {response.StatusCode}");
-//});
 
 app.MapControllers();
 
