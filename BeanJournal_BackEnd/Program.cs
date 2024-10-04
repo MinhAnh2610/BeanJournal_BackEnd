@@ -1,6 +1,7 @@
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Repositories;
 using RepositoryContracts;
+using Serilog;
 using ServiceContracts;
 using Services;
 using Services.Caching;
@@ -23,7 +25,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Add Logging
-builder.Logging.ClearProviders().AddConsole();
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
+{
+    loggerConfiguration
+    .ReadFrom.Configuration(context.Configuration) // read configurations from built-in IConfiguration
+    .ReadFrom.Services(services); // read out current app services and make them available to Serilog
+});
 
 builder.Services.AddControllers(options =>
 {
@@ -188,6 +195,12 @@ builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IEntryTagRepository, EntryTagRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+// Configure logging
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = HttpLoggingFields.RequestProperties | HttpLoggingFields.ResponsePropertiesAndHeaders;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -195,6 +208,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
+app.UseHttpLogging();
 
 app.UseSwagger();
 app.UseSwaggerUI();
