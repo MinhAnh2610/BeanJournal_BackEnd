@@ -23,11 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Add Logging
-builder.Services.AddLogging(loggingBuilder =>
-{
-    loggingBuilder.AddConsole();
-    loggingBuilder.AddDebug();
-});
+builder.Logging.ClearProviders().AddConsole();
 
 builder.Services.AddControllers(options =>
 {
@@ -192,25 +188,14 @@ builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IEntryTagRepository, EntryTagRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-// Add Cors policy
-//builder.Services.AddCors(options =>
-//{
-//  options.AddPolicy("AllowSpecificOrigin",
-//      builder =>
-//      {
-//        builder.WithOrigins("http://localhost:5173", "https://beanjournal.vercel.app")
-//                 .AllowAnyHeader()
-//                 .AllowAnyMethod();
-//      });
-//});   
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
 
-//}
 app.UseSwagger();
 app.UseSwaggerUI();
 
