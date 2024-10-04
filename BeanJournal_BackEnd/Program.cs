@@ -1,6 +1,7 @@
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Repositories;
 using RepositoryContracts;
+using Serilog;
 using ServiceContracts;
 using Services;
 using Services.Caching;
@@ -23,10 +25,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Add Logging
-builder.Services.AddLogging(loggingBuilder =>
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
 {
-    loggingBuilder.AddConsole();
-    loggingBuilder.AddDebug();
+    loggerConfiguration
+    .ReadFrom.Configuration(context.Configuration) // read configurations from built-in IConfiguration
+    .ReadFrom.Services(services); // read out current app services and make them available to Serilog
 });
 
 builder.Services.AddControllers(options =>
@@ -192,25 +195,22 @@ builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IEntryTagRepository, EntryTagRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-// Add Cors policy
-//builder.Services.AddCors(options =>
-//{
-//  options.AddPolicy("AllowSpecificOrigin",
-//      builder =>
-//      {
-//        builder.WithOrigins("http://localhost:5173", "https://beanjournal.vercel.app")
-//                 .AllowAnyHeader()
-//                 .AllowAnyMethod();
-//      });
-//});   
+// Configure logging
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = HttpLoggingFields.RequestProperties | HttpLoggingFields.ResponsePropertiesAndHeaders;
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
 
-//}
+app.UseHttpLogging();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
