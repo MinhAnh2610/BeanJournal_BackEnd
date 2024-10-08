@@ -1,4 +1,4 @@
-using BeanJournal_BackEnd.Filters.ActionFilters;
+using BeanJournal_BackEnd.Filters;
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -38,11 +38,6 @@ builder.Services.AddControllers(options =>
 	// Add Authorization Policy
 	var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 	options.Filters.Add(new AuthorizeFilter(policy));
-
-	//options.Filters.Add<ResponseHeaderActionFilter>();
-
-	//var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ResponseHeaderActionFilter>>();
-	//options.Filters.Add(new ResponseHeaderActionFilter(logger, "My-Key-From-Global", "My-Value-From-Global", 1));
 });
 
 // Add Json options to have loop reference and handle infinite looping

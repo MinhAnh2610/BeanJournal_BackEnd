@@ -1,6 +1,4 @@
-﻿using BeanJournal_BackEnd.Filters.ActionFilters;
-using BeanJournal_BackEnd.Filters.ResultFilters;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
