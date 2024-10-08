@@ -41,8 +41,8 @@ builder.Services.AddControllers(options =>
 
 	//options.Filters.Add<ResponseHeaderActionFilter>();
 
-	var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ResponseHeaderActionFilter>>();
-	options.Filters.Add(new ResponseHeaderActionFilter(logger, "My-Key-From-Global", "My-Value-From-Global", 1));
+	//var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ResponseHeaderActionFilter>>();
+	//options.Filters.Add(new ResponseHeaderActionFilter(logger, "My-Key-From-Global", "My-Value-From-Global", 1));
 });
 
 // Add Json options to have loop reference and handle infinite looping

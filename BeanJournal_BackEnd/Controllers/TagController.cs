@@ -1,4 +1,5 @@
 ﻿using BeanJournal_BackEnd.Filters.ActionFilters;
+using BeanJournal_BackEnd.Filters.ResultFilters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,6 @@ namespace BeanJournal_BackEnd.Controllers
 	/// </summary>
 	[Route("api/[controller]")]
 	[ApiController]
-	[TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = ["My-Key-From-Controller", "My-Value-From-Controller", 3])]
 	public class TagController : ControllerBase
 	{
 		private readonly ITagService _tagService;
@@ -31,7 +31,6 @@ namespace BeanJournal_BackEnd.Controllers
 		/// <returns></returns>
 		[HttpGet]
 		[Authorize(Roles = "Admin, User")]
-		[TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = ["My-Key-From-Action", "My-Value-From-Action", 4])]
 		public async Task<IActionResult> GetAll()
 		{
 			if (!ModelState.IsValid)
