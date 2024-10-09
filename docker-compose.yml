@@ -1,0 +1,29 @@
+services:
+  beanjournal-mssql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: beanjournal-mssql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Express
+      - SA_PASSWORD=Soybean2610@
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./mssql-init:/docker-entrypoint-initdb.d
+    networks:
+      - api-network
+  beanjournal-backend:
+    image: Soybean2610/beanjournal-backend
+    build: .
+    container_name: beanjournal-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=beanjournal-mssql-server;Database=BeanJournal;User=sa;Password=Soybean2610@;
+    depends_on:
+      - beanjournal-mssql-server
+    networks:
+      - api-network
+networks:
+  api-network:
+    driver: bridge

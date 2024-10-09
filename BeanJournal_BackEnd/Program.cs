@@ -26,12 +26,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Add Logging
-builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
-{
-	loggerConfiguration
-	.ReadFrom.Configuration(context.Configuration) // read configurations from built-in IConfiguration
-	.ReadFrom.Services(services); // read out current app services and make them available to Serilog
-});
+//builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
+//{
+//	loggerConfiguration
+//	.ReadFrom.Configuration(context.Configuration) // read configurations from built-in IConfiguration
+//	.ReadFrom.Services(services); // read out current app services and make them available to Serilog
+//});
 
 builder.Services.AddControllers(options =>
 {
