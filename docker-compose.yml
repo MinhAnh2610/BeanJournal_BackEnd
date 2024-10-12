@@ -1,0 +1,28 @@
+networks:
+  beanjournal_network:
+volumes:
+  sqlvolume:
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: beanjournal_sql
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Soybean2610@
+      - MSSQL_PID=Express
+    networks:
+      - beanjournal_network
+  beanjournal_backend:
+    image: ${DOCKER_REGISTRY-}beanjournalbackend
+    build:
+      context: .
+      dockerfile: BeanJournal_BackEnd/Dockerfile
+    depends_on:
+      - sqlserver
+    ports:
+      - "8080:8080"
+      # - "8081:8081"
+    networks:
+      - beanjournal_network
