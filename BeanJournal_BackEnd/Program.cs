@@ -1,4 +1,5 @@
 using BeanJournal_BackEnd.Filters;
+using BeanJournal_BackEnd.Helpers;
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -206,6 +207,9 @@ builder.Services.AddHttpLogging(options =>
 });
 
 var app = builder.Build();
+
+// Initial Migration for Database container
+DatabaseManagementService.MigrationInitalization(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
