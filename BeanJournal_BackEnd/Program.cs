@@ -186,12 +186,12 @@ builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-//// Caching for Services
-builder.Services.Decorate<ITagService, CachedTagService>();
-builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
+// Caching for Services
+//builder.Services.Decorate<ITagService, CachedTagService>();
+//builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
 
 // Add MemoryCache to the Services
-builder.Services.AddMemoryCache();
+//builder.Services.AddMemoryCache();
 
 // Add Scoped to Inversion of Control (IoC container) for Repositories
 builder.Services.AddScoped<IDiaryEntryRepository, DiaryEntryRepository>();
