@@ -31,7 +31,7 @@ namespace ServiceContracts.Mapper
         Name = tag.Name,
         ImageUrl = tag.ImageUrl,
         IconUrl = tag.IconUrl,
-        ImagePublicId = tag.IconPublicId,
+        ImagePublicId = tag.ImagePublicId,
         IconPublicId = tag.IconPublicId,
       };
     }

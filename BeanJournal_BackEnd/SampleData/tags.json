@@ -1,14 +1,82 @@
 [
   {
     "TagId": 1,
-    "Name": "Nature"
+    "Name": "Nature",
+    "ImagePublicId": "j0yfhumpqfkvtejv4qrq",
+    "IconPublicId": "jwd7ie3xvilsxdwfoer1",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728839712/j0yfhumpqfkvtejv4qrq.png",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728839713/jwd7ie3xvilsxdwfoer1.png"
   },
   {
     "TagId": 2,
-    "Name": "Reflection"
+    "Name": "Reflection",
+    "ImagePublicId": "cnm2tbtnpir8nojamcyz",
+    "IconPublicId": "e8wncdvvpkopwm8iqry0",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728839983/cnm2tbtnpir8nojamcyz.jpg",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728839984/e8wncdvvpkopwm8iqry0.png"
   },
   {
     "TagId": 3,
-    "Name": "Productivity"
+    "Name": "Productivity",
+    "ImagePublicId": "qxjv8bfeiqlxkuu33a0y",
+    "IconPublicId": "ri0uqdcwwctci8wkbskg",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840423/qxjv8bfeiqlxkuu33a0y.png",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840425/ri0uqdcwwctci8wkbskg.png"
+  },
+  {
+    "TagId": 4,
+    "Name": "Travel",
+    "ImagePublicId": "b9ziqgts97rfo8hqtzwt",
+    "IconPublicId": "i0soxznbecb5ghdaykht",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840305/b9ziqgts97rfo8hqtzwt.png",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840306/i0soxznbecb5ghdaykht.png"
+  },
+  {
+    "TagId": 5,
+    "Name": "Wellness",
+    "ImagePublicId": "ggonlsvw4usddsgiiklr",
+    "IconPublicId": "qmngr2kphivtnl1t9bzr",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840495/ggonlsvw4usddsgiiklr.jpg",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840496/qmngr2kphivtnl1t9bzr.png"
+  },
+  {
+    "TagId": 6,
+    "Name": "Creativity",
+    "ImagePublicId": "sfbxhk7ta5nbwyysfd9o",
+    "IconPublicId": "k0lhbljnerejuvrs2e6l",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840567/sfbxhk7ta5nbwyysfd9o.png",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840568/k0lhbljnerejuvrs2e6l.png"
+  },
+  {
+    "TagId": 7,
+    "Name": "Work",
+    "ImagePublicId": "h1uvqhtili9m9wpbtkji",
+    "IconPublicId": "sxci6phuvxbttoqz3uwh",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840610/h1uvqhtili9m9wpbtkji.png",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840611/sxci6phuvxbttoqz3uwh.png"
+  },
+  {
+    "TagId": 8,
+    "Name": "Family",
+    "ImagePublicId": "y7dvs5fuohoyrhqyfzhu",
+    "IconPublicId": "lv6ptrj3iipp6qhrn1oi",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840657/y7dvs5fuohoyrhqyfzhu.jpg",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840658/lv6ptrj3iipp6qhrn1oi.png"
+  },
+  {
+    "TagId": 9,
+    "Name": "Mindfulness",
+    "ImagePublicId": "mrqm4834ikuv6nazjkxj",
+    "IconPublicId": "lubu7shjfvcio6ry31qc",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840749/mrqm4834ikuv6nazjkxj.jpg",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840750/lubu7shjfvcio6ry31qc.png"
+  },
+  {
+    "TagId": 10,
+    "Name": "Self-improvement",
+    "ImagePublicId": "s9uyjgv32hkjh4etpl5x",
+    "IconPublicId": "tozy6kua45sckbcwaa6k",
+    "ImageUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840962/s9uyjgv32hkjh4etpl5x.jpg",
+    "IconUrl": "http://res.cloudinary.com/dp34so8og/image/upload/v1728840963/tozy6kua45sckbcwaa6k.png"
   }
 ]

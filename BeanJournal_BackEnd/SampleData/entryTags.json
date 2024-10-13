@@ -4,11 +4,35 @@
     "TagId": 1
   },
   {
+    "EntryId": 1,
+    "TagId": 9
+  },
+  {
+    "EntryId": 1,
+    "TagId": 10
+  },
+  {
     "EntryId": 2,
     "TagId": 2
   },
   {
+    "EntryId": 2,
+    "TagId": 5
+  },
+  {
+    "EntryId": 2,
+    "TagId": 10
+  },
+  {
     "EntryId": 3,
     "TagId": 3
+  },
+  {
+    "EntryId": 3,
+    "TagId": 7
+  },
+  {
+    "EntryId": 3,
+    "TagId": 9
   }
 ]
