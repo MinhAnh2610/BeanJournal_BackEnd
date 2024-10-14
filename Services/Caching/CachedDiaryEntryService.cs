@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using ServiceContracts;
+﻿using ServiceContracts;
 using ServiceContracts.DTO.DiaryEntry;
 using System;
 using System.Collections.Generic;
@@ -9,82 +8,86 @@ using System.Threading.Tasks;
 
 namespace Services.Caching
 {
-    public class CachedDiaryEntryService : IDiaryEntryService
-    {
-        private readonly IDiaryEntryService _decorator;
-        private readonly IMemoryCache _memoryCache;
-        public CachedDiaryEntryService(IDiaryEntryService decorator, IMemoryCache memoryCache)
-        {
-            _decorator = decorator;
-            _memoryCache = memoryCache;
-        }
+	public class CachedDiaryEntryService : IDiaryEntryService
+	{
+		private readonly IDiaryEntryService _decorator;
+		private readonly ICacheService _cacheService;
+		public CachedDiaryEntryService(IDiaryEntryService decorator, ICacheService cacheService)
+		{
+			_decorator = decorator;
+			_cacheService = cacheService;
+		}
 
-        public Task<DiaryEntryDTO> AddDiaryEntry(DiaryEntryAddDTO entry, string userId)
-        {
-            return _decorator.AddDiaryEntry(entry, userId);
-        }
+		public async Task<DiaryEntryDTO> AddDiaryEntry(DiaryEntryAddDTO entry, string userId)
+		{
+			await _cacheService.RemoveAsync("diaries");
+			await _cacheService.RemoveByPrefixAsync("diary");
 
-        public Task<DiaryEntryDTO?> DeleteDiaryEntry(int id)
-        {
-            return _decorator.DeleteDiaryEntry(id);
-        }
+			return await _decorator.AddDiaryEntry(entry, userId);
+		}
 
-        public Task<ICollection<DiaryEntryDTO>?> GetAllDiaryEntries()
-        {
-            string key = $"diary~";
+		public async Task<DiaryEntryDTO?> DeleteDiaryEntry(int id)
+		{
+			await _cacheService.RemoveAsync("diaries");
+			await _cacheService.RemoveByPrefixAsync("diary");
 
-            return _memoryCache.GetOrCreateAsync(
-                key,
-                entry =>
-                {
-                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+			return await _decorator.DeleteDiaryEntry(id);
+		}
 
-                    return _decorator.GetAllDiaryEntries();
-                });
-        }
+		public async Task<ICollection<DiaryEntryDTO>?> GetAllDiaryEntries()
+		{
+			return await _cacheService.GetAsync(
+				"diaries",
+				async () =>
+				{
+					ICollection<DiaryEntryDTO>? diaries = await _decorator.GetAllDiaryEntries();
 
-        public Task<DiaryEntryDTO?> GetDiaryEntryByDate(DateTime date)
-        {
-            string key = $"diary~{date}";
+					return diaries!;
+				});
+		}
 
-            return _memoryCache.GetOrCreateAsync(
-                key, entry =>
-                {
-                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+		public async Task<DiaryEntryDTO?> GetDiaryEntryByDate(DateTime date)
+		{
+			return await _cacheService.GetAsync(
+				$"diary-{date}",
+				async () =>
+				{
+					DiaryEntryDTO? diary = await _decorator.GetDiaryEntryByDate(date);
 
-                    return _decorator.GetDiaryEntryByDate(date);
-                });
-        }
+					return diary!;
+				});
+		}
 
-        public Task<DiaryEntryDTO?> GetDiaryEntryById(int id)
-        {
-            string key = $"diary~{id}";
+		public async Task<DiaryEntryDTO?> GetDiaryEntryById(int id)
+		{
+			return await _cacheService.GetAsync(
+				$"diary-{id}",
+				async () =>
+				{
+					DiaryEntryDTO? diary = await _decorator.GetDiaryEntryById(id);
 
-            return _memoryCache.GetOrCreateAsync(
-                key, entry =>
-                {
-                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+					return diary!;
+				});
+		}
 
-                    return _decorator.GetDiaryEntryById(id);
-                });
-        }
+		public async Task<ICollection<DiaryEntryDTO>?> GetDiaryEntryByUserId(string userId)
+		{
+			return await _cacheService.GetAsync(
+				$"diary-{userId}",
+				async () =>
+				{
+					ICollection<DiaryEntryDTO>? diary = await _decorator.GetDiaryEntryByUserId(userId);
 
-        public Task<ICollection<DiaryEntryDTO>?> GetDiaryEntryByUserId(string userId)
-        {
-            string key = $"diary~{userId}";
+					return diary!;
+				});
+		}
 
-            return _memoryCache.GetOrCreateAsync(
-                key, entry =>
-                {
-                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+		public async Task<DiaryEntryDTO?> UpdateDiaryEntry(int entryId, DiaryEntryUpdateDTO entry, string userId)
+		{
+			await _cacheService.RemoveAsync("diaries");
+			await _cacheService.RemoveByPrefixAsync("diary");
 
-                    return _decorator.GetDiaryEntryByUserId(userId);
-                });
-        }
-
-        public Task<DiaryEntryDTO?> UpdateDiaryEntry(int entryId, DiaryEntryUpdateDTO entry, string userId)
-        {
-            return _decorator.UpdateDiaryEntry(entryId, entry, userId);
-        }
-    }
+			return await _decorator.UpdateDiaryEntry(entryId, entry, userId);
+		}
+	}
 }

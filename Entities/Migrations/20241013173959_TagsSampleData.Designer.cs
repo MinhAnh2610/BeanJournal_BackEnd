@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241013173959_TagsSampleData")]
+    partial class TagsSampleData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,7 +113,7 @@ namespace Entities.Migrations
                             Id = "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "7c9f577f-8a87-4c15-9306-b51848c2ac3b",
-                            CreatedAt = new DateTime(2024, 10, 14, 14, 22, 19, 710, DateTimeKind.Local).AddTicks(7724),
+                            CreatedAt = new DateTime(2024, 10, 14, 0, 39, 59, 451, DateTimeKind.Local).AddTicks(2429),
                             Email = "soybean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -131,7 +134,7 @@ namespace Entities.Migrations
                             Id = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "d81e6a9a-d634-4460-a5fb-c9d6605c0338",
-                            CreatedAt = new DateTime(2024, 10, 14, 14, 22, 19, 710, DateTimeKind.Local).AddTicks(8036),
+                            CreatedAt = new DateTime(2024, 10, 14, 0, 39, 59, 451, DateTimeKind.Local).AddTicks(2724),
                             Email = "greenbean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -152,7 +155,7 @@ namespace Entities.Migrations
                             Id = "defd8035-ca84-4013-9f1d-1ae00af310b4",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "5d73f102-7151-4b61-9ebf-06b963b8cd8b",
-                            CreatedAt = new DateTime(2024, 10, 14, 14, 22, 19, 710, DateTimeKind.Local).AddTicks(8082),
+                            CreatedAt = new DateTime(2024, 10, 14, 0, 39, 59, 451, DateTimeKind.Local).AddTicks(2763),
                             Email = "minhanh26102004@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -224,7 +227,7 @@ namespace Entities.Migrations
                             EntryId = 2,
                             Content = "Spent some time thinking about life, feeling a bit melancholy.",
                             CreatedAt = new DateTime(2024, 8, 11, 20, 30, 0, 0, DateTimeKind.Unspecified),
-                            Mood = "Thinking",
+                            Mood = "Reflective",
                             Title = "Reflective Evening",
                             UpdatedAt = new DateTime(2024, 8, 11, 20, 30, 0, 0, DateTimeKind.Unspecified),
                             UserId = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC"
@@ -350,50 +353,26 @@ namespace Entities.Migrations
                         new
                         {
                             MediaId = 1,
-                            Bytes = 21079L,
-                            CreatedAt = new DateTime(2024, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Bytes = 0L,
+                            CreatedAt = new DateTime(2024, 8, 10, 9, 20, 0, 0, DateTimeKind.Unspecified),
                             EntryId = 1,
-                            FilePath = "https://res.cloudinary.com/dp34so8og/image/upload/v1728888961/r714qjypzjk74xzacfge.jpg",
-                            FileType = "jpg",
-                            Height = 500,
-                            PublicId = "r714qjypzjk74xzacfge",
-                            Width = 500
+                            FilePath = "/media/park-photo.jpg",
+                            FileType = "image/jpeg",
+                            Height = 0,
+                            PublicId = "",
+                            Width = 0
                         },
                         new
                         {
                             MediaId = 2,
-                            Bytes = 25927L,
-                            CreatedAt = new DateTime(2024, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            EntryId = 1,
-                            FilePath = "https://res.cloudinary.com/dp34so8og/image/upload/v1728888962/mhi7gxgc5npedgsrxywk.jpg",
-                            FileType = "jpg",
-                            Height = 500,
-                            PublicId = "mhi7gxgc5npedgsrxywk",
-                            Width = 500
-                        },
-                        new
-                        {
-                            MediaId = 3,
-                            Bytes = 28629L,
-                            CreatedAt = new DateTime(2024, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Bytes = 0L,
+                            CreatedAt = new DateTime(2024, 8, 11, 20, 45, 0, 0, DateTimeKind.Unspecified),
                             EntryId = 2,
-                            FilePath = "https://res.cloudinary.com/dp34so8og/image/upload/v1728889003/vwck4ehodogpda1mm0yb.jpg",
-                            FileType = "jpg",
-                            Height = 500,
-                            PublicId = "vwck4ehodogpda1mm0yb",
-                            Width = 500
-                        },
-                        new
-                        {
-                            MediaId = 4,
-                            Bytes = 30154L,
-                            CreatedAt = new DateTime(2024, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            EntryId = 2,
-                            FilePath = "https://res.cloudinary.com/dp34so8og/image/upload/v1728889005/dhvolfscyn4tubn0pfmd.jpg",
-                            FileType = "jpg",
-                            Height = 500,
-                            PublicId = "dhvolfscyn4tubn0pfmd",
-                            Width = 500
+                            FilePath = "/media/thoughts-audio.mp3",
+                            FileType = "audio/mpeg",
+                            Height = 0,
+                            PublicId = "",
+                            Width = 0
                         });
                 });
 

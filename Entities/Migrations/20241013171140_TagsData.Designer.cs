@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241013171140_TagsData")]
+    partial class TagsData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,7 +113,7 @@ namespace Entities.Migrations
                             Id = "C8E6EC09-E26E-4CB9-8FE3-E167AF44CB8D",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "7c9f577f-8a87-4c15-9306-b51848c2ac3b",
-                            CreatedAt = new DateTime(2024, 10, 14, 14, 22, 19, 710, DateTimeKind.Local).AddTicks(7724),
+                            CreatedAt = new DateTime(2024, 10, 14, 0, 11, 38, 54, DateTimeKind.Local).AddTicks(6311),
                             Email = "soybean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -131,7 +134,7 @@ namespace Entities.Migrations
                             Id = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "d81e6a9a-d634-4460-a5fb-c9d6605c0338",
-                            CreatedAt = new DateTime(2024, 10, 14, 14, 22, 19, 710, DateTimeKind.Local).AddTicks(8036),
+                            CreatedAt = new DateTime(2024, 10, 14, 0, 11, 38, 54, DateTimeKind.Local).AddTicks(6614),
                             Email = "greenbean@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -152,7 +155,7 @@ namespace Entities.Migrations
                             Id = "defd8035-ca84-4013-9f1d-1ae00af310b4",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "5d73f102-7151-4b61-9ebf-06b963b8cd8b",
-                            CreatedAt = new DateTime(2024, 10, 14, 14, 22, 19, 710, DateTimeKind.Local).AddTicks(8082),
+                            CreatedAt = new DateTime(2024, 10, 14, 0, 11, 38, 54, DateTimeKind.Local).AddTicks(6656),
                             Email = "minhanh26102004@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -224,7 +227,7 @@ namespace Entities.Migrations
                             EntryId = 2,
                             Content = "Spent some time thinking about life, feeling a bit melancholy.",
                             CreatedAt = new DateTime(2024, 8, 11, 20, 30, 0, 0, DateTimeKind.Unspecified),
-                            Mood = "Thinking",
+                            Mood = "Reflective",
                             Title = "Reflective Evening",
                             UpdatedAt = new DateTime(2024, 8, 11, 20, 30, 0, 0, DateTimeKind.Unspecified),
                             UserId = "507F10EC-3BAB-4C22-B4AD-4D5E3FDBC2AC"
@@ -350,50 +353,26 @@ namespace Entities.Migrations
                         new
                         {
                             MediaId = 1,
-                            Bytes = 21079L,
-                            CreatedAt = new DateTime(2024, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Bytes = 0L,
+                            CreatedAt = new DateTime(2024, 8, 10, 9, 20, 0, 0, DateTimeKind.Unspecified),
                             EntryId = 1,
-                            FilePath = "https://res.cloudinary.com/dp34so8og/image/upload/v1728888961/r714qjypzjk74xzacfge.jpg",
-                            FileType = "jpg",
-                            Height = 500,
-                            PublicId = "r714qjypzjk74xzacfge",
-                            Width = 500
+                            FilePath = "/media/park-photo.jpg",
+                            FileType = "image/jpeg",
+                            Height = 0,
+                            PublicId = "",
+                            Width = 0
                         },
                         new
                         {
                             MediaId = 2,
-                            Bytes = 25927L,
-                            CreatedAt = new DateTime(2024, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            EntryId = 1,
-                            FilePath = "https://res.cloudinary.com/dp34so8og/image/upload/v1728888962/mhi7gxgc5npedgsrxywk.jpg",
-                            FileType = "jpg",
-                            Height = 500,
-                            PublicId = "mhi7gxgc5npedgsrxywk",
-                            Width = 500
-                        },
-                        new
-                        {
-                            MediaId = 3,
-                            Bytes = 28629L,
-                            CreatedAt = new DateTime(2024, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Bytes = 0L,
+                            CreatedAt = new DateTime(2024, 8, 11, 20, 45, 0, 0, DateTimeKind.Unspecified),
                             EntryId = 2,
-                            FilePath = "https://res.cloudinary.com/dp34so8og/image/upload/v1728889003/vwck4ehodogpda1mm0yb.jpg",
-                            FileType = "jpg",
-                            Height = 500,
-                            PublicId = "vwck4ehodogpda1mm0yb",
-                            Width = 500
-                        },
-                        new
-                        {
-                            MediaId = 4,
-                            Bytes = 30154L,
-                            CreatedAt = new DateTime(2024, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            EntryId = 2,
-                            FilePath = "https://res.cloudinary.com/dp34so8og/image/upload/v1728889005/dhvolfscyn4tubn0pfmd.jpg",
-                            FileType = "jpg",
-                            Height = 500,
-                            PublicId = "dhvolfscyn4tubn0pfmd",
-                            Width = 500
+                            FilePath = "/media/thoughts-audio.mp3",
+                            FileType = "audio/mpeg",
+                            Height = 0,
+                            PublicId = "",
+                            Width = 0
                         });
                 });
 
@@ -434,91 +413,91 @@ namespace Entities.Migrations
                         new
                         {
                             TagId = 1,
-                            IconPublicId = "jwd7ie3xvilsxdwfoer1",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728839713/jwd7ie3xvilsxdwfoer1.png",
-                            ImagePublicId = "j0yfhumpqfkvtejv4qrq",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728839712/j0yfhumpqfkvtejv4qrq.png",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Nature"
                         },
                         new
                         {
                             TagId = 2,
-                            IconPublicId = "e8wncdvvpkopwm8iqry0",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728839984/e8wncdvvpkopwm8iqry0.png",
-                            ImagePublicId = "cnm2tbtnpir8nojamcyz",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728839983/cnm2tbtnpir8nojamcyz.jpg",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Reflection"
                         },
                         new
                         {
                             TagId = 3,
-                            IconPublicId = "ri0uqdcwwctci8wkbskg",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840425/ri0uqdcwwctci8wkbskg.png",
-                            ImagePublicId = "qxjv8bfeiqlxkuu33a0y",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840423/qxjv8bfeiqlxkuu33a0y.png",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Productivity"
                         },
                         new
                         {
                             TagId = 4,
-                            IconPublicId = "i0soxznbecb5ghdaykht",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840306/i0soxznbecb5ghdaykht.png",
-                            ImagePublicId = "b9ziqgts97rfo8hqtzwt",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840305/b9ziqgts97rfo8hqtzwt.png",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Travel"
                         },
                         new
                         {
                             TagId = 5,
-                            IconPublicId = "qmngr2kphivtnl1t9bzr",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840496/qmngr2kphivtnl1t9bzr.png",
-                            ImagePublicId = "ggonlsvw4usddsgiiklr",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840495/ggonlsvw4usddsgiiklr.jpg",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Wellness"
                         },
                         new
                         {
                             TagId = 6,
-                            IconPublicId = "k0lhbljnerejuvrs2e6l",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840568/k0lhbljnerejuvrs2e6l.png",
-                            ImagePublicId = "sfbxhk7ta5nbwyysfd9o",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840567/sfbxhk7ta5nbwyysfd9o.png",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Creativity"
                         },
                         new
                         {
                             TagId = 7,
-                            IconPublicId = "sxci6phuvxbttoqz3uwh",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840611/sxci6phuvxbttoqz3uwh.png",
-                            ImagePublicId = "h1uvqhtili9m9wpbtkji",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840610/h1uvqhtili9m9wpbtkji.png",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Work"
                         },
                         new
                         {
                             TagId = 8,
-                            IconPublicId = "lv6ptrj3iipp6qhrn1oi",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840658/lv6ptrj3iipp6qhrn1oi.png",
-                            ImagePublicId = "y7dvs5fuohoyrhqyfzhu",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840657/y7dvs5fuohoyrhqyfzhu.jpg",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Family"
                         },
                         new
                         {
                             TagId = 9,
-                            IconPublicId = "lubu7shjfvcio6ry31qc",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840750/lubu7shjfvcio6ry31qc.png",
-                            ImagePublicId = "mrqm4834ikuv6nazjkxj",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840749/mrqm4834ikuv6nazjkxj.jpg",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Mindfulness"
                         },
                         new
                         {
                             TagId = 10,
-                            IconPublicId = "tozy6kua45sckbcwaa6k",
-                            IconUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840963/tozy6kua45sckbcwaa6k.png",
-                            ImagePublicId = "s9uyjgv32hkjh4etpl5x",
-                            ImageUrl = "http://res.cloudinary.com/dp34so8og/image/upload/v1728840962/s9uyjgv32hkjh4etpl5x.jpg",
+                            IconPublicId = "",
+                            IconUrl = "",
+                            ImagePublicId = "",
+                            ImageUrl = "",
                             Name = "Self-improvement"
                         });
                 });

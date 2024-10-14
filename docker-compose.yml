@@ -3,9 +3,9 @@ networks:
 volumes:
   sqlvolume:
 services:
-  sqlserver:
+  beanjournal.database:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: beanjournal_sql
+    container_name: beanjournal.database
     volumes:
       - sqlvolume:/var/opt/mssql
     environment:
@@ -14,15 +14,23 @@ services:
       - MSSQL_PID=Express
     networks:
       - beanjournal_network
-  beanjournal_backend:
+
+  beanjournal.api:
     image: ${DOCKER_REGISTRY-}beanjournalbackend
+    container_name: beanjournal.api
     build:
       context: .
       dockerfile: BeanJournal_BackEnd/Dockerfile
     depends_on:
-      - sqlserver
+      - beanjournal.database
     ports:
       - "8080:8080"
-      # - "8081:8081"
+      - "8081:8081"
     networks:
       - beanjournal_network
+
+  beanjournal.cache:
+    image: redis.latest
+    restart: always
+    ports:
+      - "6379:6379" 
