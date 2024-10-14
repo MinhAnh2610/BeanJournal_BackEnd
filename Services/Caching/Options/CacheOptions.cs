@@ -11,7 +11,7 @@ namespace Services.Caching.Options
 	{
 		public static DistributedCacheEntryOptions DefaultExpiration => new DistributedCacheEntryOptions()
 		{
-			AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+			AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
 		};
 	}
 }

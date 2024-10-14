@@ -186,16 +186,17 @@ builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-//// Caching for Services
-//builder.Services.AddSingleton<ICacheService, CacheService>();
-//builder.Services.Decorate<ITagService, CachedTagService>();
-//builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
+// Caching for Services
+builder.Services.AddSingleton<ICacheService, CacheService>();
+builder.Services.Decorate<ITagService, CachedTagService>();
+builder.Services.Decorate<IDiaryEntryService, CachedDiaryEntryService>();
+builder.Services.Decorate<IMediaAttachmentService, CacheMediaAttachmentService>();
 
-//// Add Distributed Caching to the Services (StackExchange.Redis)
-//builder.Services.AddStackExchangeRedisCache(options =>
-//{
-//	options.Configuration = builder.Configuration.GetConnectionString("Redis");
-//});
+// Add Distributed Caching to the Services (StackExchange.Redis)
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+	options.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
 
 // Add Scoped to Inversion of Control (IoC container) for Repositories
 builder.Services.AddScoped<IDiaryEntryRepository, DiaryEntryRepository>();
@@ -213,7 +214,7 @@ builder.Services.AddHttpLogging(options =>
 var app = builder.Build();
 
 // Initial Migration for Database container
-DatabaseManagementService.MigrationInitalization(app);
+app.ApplyMigrations();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

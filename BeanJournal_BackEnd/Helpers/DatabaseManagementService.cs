@@ -6,13 +6,13 @@ namespace BeanJournal_BackEnd.Helpers
 	/// <summary>
 	/// Helper class to initalize database for docker compose up
 	/// </summary>
-	public class DatabaseManagementService
+	public static class DatabaseManagementService
 	{
 		/// <summary>
 		/// Migration initialization
 		/// </summary>
 		/// <param name="app"></param>
-		public static void MigrationInitalization(IApplicationBuilder app)
+		public static void ApplyMigrations(this IApplicationBuilder app)
 		{
 			using (var serviceScope = app.ApplicationServices.CreateScope())
 			{

@@ -2,15 +2,45 @@
   {
     "MediaId": 1,
     "EntryId": 1,
-    "FilePath": "/media/park-photo.jpg",
-    "FileType": "image/jpeg",
-    "CreatedAt": "2024-08-10T09:20:00"
+    "PublicId": "r714qjypzjk74xzacfge",
+    "Width": 500,
+    "Height": 500,
+    "Bytes": 21079,
+    "FilePath": "https://res.cloudinary.com/dp34so8og/image/upload/v1728888961/r714qjypzjk74xzacfge.jpg",
+    "FileType": "jpg",
+    "CreatedAt": "2024-10-14"
   },
   {
     "MediaId": 2,
+    "EntryId": 1,
+    "PublicId": "mhi7gxgc5npedgsrxywk",
+    "Width": 500,
+    "Height": 500,
+    "Bytes": 25927,
+    "FilePath": "https://res.cloudinary.com/dp34so8og/image/upload/v1728888962/mhi7gxgc5npedgsrxywk.jpg",
+    "FileType": "jpg",
+    "CreatedAt": "2024-10-14"
+  },
+  {
+    "MediaId": 3,
     "EntryId": 2,
-    "FilePath": "/media/thoughts-audio.mp3",
-    "FileType": "audio/mpeg",
-    "CreatedAt": "2024-08-11T20:45:00"
+    "PublicId": "vwck4ehodogpda1mm0yb",
+    "Width": 500,
+    "Height": 500,
+    "Bytes": 28629,
+    "FilePath": "https://res.cloudinary.com/dp34so8og/image/upload/v1728889003/vwck4ehodogpda1mm0yb.jpg",
+    "FileType": "jpg",
+    "CreatedAt": "2024-10-14"
+  },
+  {
+    "MediaId": 4,
+    "EntryId": 2,
+    "PublicId": "dhvolfscyn4tubn0pfmd",
+    "Width": 500,
+    "Height": 500,
+    "Bytes": 30154,
+    "FilePath": "https://res.cloudinary.com/dp34so8og/image/upload/v1728889005/dhvolfscyn4tubn0pfmd.jpg",
+    "FileType": "jpg",
+    "CreatedAt": "2024-10-14"
   }
 ]

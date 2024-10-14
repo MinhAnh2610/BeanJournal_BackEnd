@@ -18,14 +18,20 @@ namespace Services.Caching
 			_cacheService = cacheService;
 		}
 
-		public Task<DiaryEntryDTO> AddDiaryEntry(DiaryEntryAddDTO entry, string userId)
+		public async Task<DiaryEntryDTO> AddDiaryEntry(DiaryEntryAddDTO entry, string userId)
 		{
-			return _decorator.AddDiaryEntry(entry, userId);
+			await _cacheService.RemoveAsync("diaries");
+			await _cacheService.RemoveByPrefixAsync("diary");
+
+			return await _decorator.AddDiaryEntry(entry, userId);
 		}
 
-		public Task<DiaryEntryDTO?> DeleteDiaryEntry(int id)
+		public async Task<DiaryEntryDTO?> DeleteDiaryEntry(int id)
 		{
-			return _decorator.DeleteDiaryEntry(id);
+			await _cacheService.RemoveAsync("diaries");
+			await _cacheService.RemoveByPrefixAsync("diary");
+
+			return await _decorator.DeleteDiaryEntry(id);
 		}
 
 		public async Task<ICollection<DiaryEntryDTO>?> GetAllDiaryEntries()
@@ -76,9 +82,12 @@ namespace Services.Caching
 				});
 		}
 
-		public Task<DiaryEntryDTO?> UpdateDiaryEntry(int entryId, DiaryEntryUpdateDTO entry, string userId)
+		public async Task<DiaryEntryDTO?> UpdateDiaryEntry(int entryId, DiaryEntryUpdateDTO entry, string userId)
 		{
-			return _decorator.UpdateDiaryEntry(entryId, entry, userId);
+			await _cacheService.RemoveAsync("diaries");
+			await _cacheService.RemoveByPrefixAsync("diary");
+
+			return await _decorator.UpdateDiaryEntry(entryId, entry, userId);
 		}
 	}
 }

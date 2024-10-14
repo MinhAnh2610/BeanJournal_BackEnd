@@ -30,6 +30,7 @@ namespace ServiceContracts.Mapper
       return new MediaAttachmentDTO
       {
         MediaId = mediaAttachment.MediaId,
+				PublicId = mediaAttachment.PublicId,
         Width = mediaAttachment.Width,
         Height = mediaAttachment.Height,
         Bytes = mediaAttachment.Bytes,

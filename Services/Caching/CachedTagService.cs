@@ -18,9 +18,13 @@ namespace Services.Caching
 			_decorator = decorator;
 			_cacheService = service;
 		}
-		public Task<TagDTO> AddTag(TagAddDTO tag)
+		public async Task<TagDTO> AddTag(TagAddDTO tag)
 		{
-			return _decorator.AddTag(tag);
+			await _cacheService.RemoveAsync("diaries");
+			await _cacheService.RemoveByPrefixAsync("diary");
+			await _cacheService.RemoveByPrefixAsync("tag");
+
+			return await _decorator.AddTag(tag);
 		}
 
 		public Task<DeletionResult> DeleteIcon(string publicId)
@@ -33,9 +37,13 @@ namespace Services.Caching
 			return _decorator.DeleteImage(publicId);
 		}
 
-		public Task<TagDTO?> DeleteTag(int id)
+		public async Task<TagDTO?> DeleteTag(int id)
 		{
-			return _decorator.DeleteTag(id);
+			await _cacheService.RemoveAsync("diaries");
+			await _cacheService.RemoveByPrefixAsync("diary");
+			await _cacheService.RemoveByPrefixAsync("tag");
+
+			return await _decorator.DeleteTag(id);
 		}
 
 		public async Task<ICollection<TagDTO>?> GetAllTags()
@@ -62,9 +70,13 @@ namespace Services.Caching
 				});
 		}
 
-		public Task<TagDTO?> UpdateTag(int tagId, TagAddDTO tag)
+		public async Task<TagDTO?> UpdateTag(int tagId, TagAddDTO tag)
 		{
-			return _decorator.UpdateTag(tagId, tag);
+			await _cacheService.RemoveAsync("diaries");
+			await _cacheService.RemoveByPrefixAsync("diary");
+			await _cacheService.RemoveByPrefixAsync("tag");
+
+			return await _decorator.UpdateTag(tagId, tag);
 		}
 
 		public Task<ImageUploadResult> UploadIcon(TagAddDTO tag)

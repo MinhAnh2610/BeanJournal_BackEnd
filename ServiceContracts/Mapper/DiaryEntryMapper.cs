@@ -51,7 +51,11 @@ namespace ServiceContracts.Mapper
           .Select(x => new TagDTO()
           {
             TagId = x.TagId,
-            Name = x.Tag!.Name
+            Name = x.Tag!.Name,
+						IconPublicId = x.Tag!.IconPublicId,
+						IconUrl = x.Tag!.IconUrl,
+						ImagePublicId = x.Tag!.ImagePublicId,
+						ImageUrl = x.Tag!.ImageUrl
           })
           .ToList()!,
         MediaAttachments = entry.MediaAttachments?
