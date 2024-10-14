@@ -1,7 +1,10 @@
 networks:
   beanjournal_network:
+
 volumes:
   sqlvolume:
+  redisvolume:
+
 services:
   beanjournal.database:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -30,7 +33,12 @@ services:
       - beanjournal_network
 
   beanjournal.cache:
-    image: redis.latest
+    image: redis:latest
+    container_name: beanjournal.cache
     restart: always
+    volumes:
+      - redisvolume:/data
     ports:
       - "6379:6379" 
+    networks:
+      - beanjournal_network
