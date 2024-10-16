@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repositories
 {
-  public class TagRepository : ITagRepository
+	public class TagRepository : ITagRepository
   {
     private readonly ApplicationDbContext _context;
     public TagRepository(ApplicationDbContext context)
@@ -40,7 +40,12 @@ namespace Repositories
       return await _context.Tags.FindAsync(id);
     }
 
-    public async Task<ICollection<Tag>?> GetTagsAsync()
+		public async Task<Tag?> GetTagByNameAsync(string name)
+		{
+			return await _context.Tags.FirstAsync(x => x.Name == name);
+		}
+
+		public async Task<ICollection<Tag>?> GetTagsAsync()
     {
       return await _context.Tags.ToListAsync();
     }
