@@ -1,8 +1,4 @@
-﻿using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Entities;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.Tag;
@@ -18,47 +14,28 @@ namespace Services
   public class TagService : ITagService
   {
     private readonly ITagRepository _tagRepository;
-    private readonly IOptions<CloudinarySettings> _config;
-    private readonly Cloudinary _cloudinary;
-    public TagService(ITagRepository tagRepository, IOptions<CloudinarySettings> config)
+		private readonly IImageRepository _imageRepository;
+    public TagService(ITagRepository tagRepository, IImageRepository imageRepository)
     {
-      var acc = new Account()
-      {
-        Cloud = config.Value.CloudName,
-        ApiKey = config.Value.ApiKey,
-        ApiSecret = config.Value.ApiSecret
-      };
-
       _tagRepository = tagRepository;
-      _config = config;
-      _cloudinary = new Cloudinary(acc);
+			_imageRepository = imageRepository;
     }
 
     public async Task<TagDTO> AddTag(TagAddDTO tag)
     {
-      var imageResult = await UploadImage(tag);
-      var iconResult = await UploadIcon(tag);
+			var existingTag = await _tagRepository.GetTagByNameAsync(tag.Name);
+			if (existingTag != null)
+			{
+				throw new ArgumentException();
+			}
+
+			var imageResult = await _imageRepository.UploadImage(tag.Image!, 500, 500);
+      var iconResult = await _imageRepository.UploadImage(tag.Icon!, 100, 100);
 
       var tagModel = tag.ToTagFromAdd(imageResult, iconResult);
 
       var tagResponse = await _tagRepository.CreateTagAsync(tagModel);
       return tagResponse.ToTagDto();
-    }
-
-    public async Task<DeletionResult> DeleteIcon(string publicId)
-    {
-      var deleteParams = new DeletionParams(publicId);
-      var result = await _cloudinary.DestroyAsync(deleteParams);
-
-      return result;
-    }
-
-    public async Task<DeletionResult> DeleteImage(string publicId)
-    {
-      var deleteParams = new DeletionParams(publicId);
-      var result = await _cloudinary.DestroyAsync(deleteParams);
-
-      return result;
     }
 
     public async Task<TagDTO?> DeleteTag(int id)
@@ -71,11 +48,11 @@ namespace Services
 
       if (!existingTag.ImagePublicId.IsNullOrEmpty())
       {
-        await DeleteImage(existingTag.ImagePublicId);
+        await _imageRepository.DeleteByPublicId(existingTag.ImagePublicId);
       }
       if (!existingTag.IconPublicId.IsNullOrEmpty())
       {
-        await DeleteIcon(existingTag.IconPublicId);
+        await _imageRepository.DeleteByPublicId(existingTag.IconPublicId);
       }
 
       var tagReponse = await _tagRepository.DeleteTagAsync(id);
@@ -108,6 +85,8 @@ namespace Services
 
     public async Task<TagDTO?> UpdateTag(int tagId, TagAddDTO tag)
     {
+			ArgumentNullException.ThrowIfNull(tag);
+
       var existingTag = await _tagRepository.GetTagByIdAsync(tagId);
 
       if (existingTag == null)
@@ -117,15 +96,15 @@ namespace Services
 
       if (!existingTag.ImagePublicId.IsNullOrEmpty())
       {
-        await DeleteImage(existingTag.ImagePublicId);
+        await _imageRepository.DeleteByPublicId(existingTag.ImagePublicId);
       }
       if (!existingTag.IconPublicId.IsNullOrEmpty())
       {
-        await DeleteIcon(existingTag.IconPublicId);
+        await _imageRepository.DeleteByPublicId(existingTag.IconPublicId);
       }
 
-      var imageResult = await UploadImage(tag);
-      var iconResult = await UploadIcon(tag);
+      var imageResult = await _imageRepository.UploadImage(tag.Image!, 500, 500);
+      var iconResult = await _imageRepository.UploadImage(tag.Icon!, 100, 100);
 
       var tagModel = tag.ToTagFromAdd(imageResult, iconResult);
 
@@ -135,38 +114,6 @@ namespace Services
         return null;
       }
       return tagResponse.ToTagDto();
-    }
-
-    public async Task<ImageUploadResult> UploadIcon(TagAddDTO tag)
-    {
-      var uploadResult = new ImageUploadResult();
-      if (tag.Icon!.Length > 0)
-      {
-        using var stream = tag.Icon.OpenReadStream();
-        var uploadParams = new ImageUploadParams
-        {
-          File = new FileDescription(tag.Icon.FileName, stream),
-          Transformation = new Transformation().Height(100).Width(100).Crop("fill").Gravity("face")
-        };
-        uploadResult = await _cloudinary.UploadAsync(uploadParams);
-      }
-      return uploadResult;
-    }
-
-    public async Task<ImageUploadResult> UploadImage(TagAddDTO tag)
-    {
-      var uploadResult = new ImageUploadResult();
-      if (tag.Image!.Length > 0)
-      {
-        using var stream = tag.Image.OpenReadStream();
-        var uploadParams = new ImageUploadParams
-        {
-          File = new FileDescription(tag.Image.FileName, stream),
-          Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face")
-        };
-        uploadResult = await _cloudinary.UploadAsync(uploadParams);
-      }
-      return uploadResult;
     }
   }
 }
