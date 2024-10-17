@@ -77,6 +77,45 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		}
 
 		[Fact]
+		public async Task AddTag_ValidTag_ShouldCallRepositoryOnce()
+		{
+			//Arrange
+			IFormFile mockImageFile = Substitute.For<IFormFile>();
+
+			TagAddDTO tag_add_request = _fixture
+				.Build<TagAddDTO>()
+				.With(temp => temp.Name, "Nature")
+				.With(temp => temp.Image, mockImageFile)
+				.With(temp => temp.Icon, mockImageFile)
+				.Create();
+
+			ImageUploadResult tag_image_result = new ImageUploadResult()
+			{
+				PublicId = "test_image_public_id",
+				Url = new Uri("https://test_image_url")
+			};
+			ImageUploadResult tag_icon_result = new ImageUploadResult()
+			{
+				PublicId = "test_icon_public_id",
+				Url = new Uri("https://test_icon_url")
+			};
+
+			Tag expected_tag_response = tag_add_request.ToTagFromAdd(tag_image_result, tag_icon_result);
+
+			_imageRepositoryMock.UploadImage(mockImageFile, 500, 500).Returns(tag_image_result);
+			_imageRepositoryMock.UploadImage(mockImageFile, 100, 100).Returns(tag_icon_result);
+
+			_tagRepositoryMock.CreateTagAsync(Arg.Any<Tag>()).Returns(expected_tag_response);
+			_tagRepositoryMock.GetTagByNameAsync(Arg.Any<string>()).Returns((Tag?)null);
+
+			//Act
+			await _tagService.AddTag(tag_add_request);
+
+			//Assert
+			await _tagRepositoryMock.Received(1).CreateTagAsync(Arg.Any<Tag>());
+		}
+
+		[Fact]
 		public async Task AddTag_DuplicateName_ShouldThrowArgumentException()
 		{
 			//Arrange
@@ -147,15 +186,246 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		#endregion
 
 		#region GetAllTags
+		[Fact]
+		public async Task GetAllTags_RepositoryReturnsNull_ShouldReturnNull()
+		{
+			//Arrange
+			_tagRepositoryMock.GetTagsAsync().Returns(null as ICollection<Tag>);
 
+			//Act
+			var actual_tags_response = await _tagService.GetAllTags();
+
+			//Assert
+			actual_tags_response.Should().BeNull();
+		}
+
+		[Fact]
+		public async Task GetAllTags_RepositoryReturnsTags_ShouldReturnListOfTagDTOs()
+		{
+			//Arrage
+			ICollection<Tag> tags = _fixture
+				.Build<Tag>()
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>)
+				.CreateMany(3)
+				.ToList();
+
+			_tagRepositoryMock.GetTagsAsync().Returns(tags);
+
+			ICollection<TagDTO> expected_tags_response = tags.Select(x => x.ToTagDto()).ToList();
+
+			//Act
+			ICollection<TagDTO>? actual_tags_response = await _tagService.GetAllTags();
+
+			//Assert
+			actual_tags_response.Should().NotBeEmpty();
+			actual_tags_response.Should().BeEquivalentTo(expected_tags_response);
+		}
+
+		[Fact]
+		public async Task GetAllTags_RepositoryReturnsEmptyList_ShouldReturnEmptyList()
+		{
+			//Arrange
+			ICollection<Tag> tags = new List<Tag>();
+
+			_tagRepositoryMock.GetTagsAsync().Returns(tags);
+
+			ICollection<TagAddDTO> expected_tags_reponse = new List<TagAddDTO>();
+
+			//Act
+			ICollection<TagDTO>? actual_tags_response = await _tagService.GetAllTags();
+
+			//Assert
+			actual_tags_response.Should().NotBeNull();
+			actual_tags_response.Should().BeEmpty();
+			actual_tags_response.Should().BeEquivalentTo(expected_tags_reponse);
+		}
 		#endregion
 
 		#region GetTagById
+		[Fact]
+		public async Task GetTagById_TagExist_ShouldReturnTagDTO()
+		{
+			//Arrange
+			Tag tag = _fixture.Build<Tag>()
+				.With(temp => temp.TagId, 1)
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>)
+				.Create();
 
+			_tagRepositoryMock.GetTagByIdAsync(tag.TagId).Returns(tag);
+
+			TagDTO expected_tag_response = tag.ToTagDto();
+
+			//Act
+			TagDTO? actual_tag_response = await _tagService.GetTagById(tag.TagId);
+
+			//Assert
+			actual_tag_response.Should().NotBeNull();
+			actual_tag_response.Should().BeEquivalentTo(expected_tag_response);
+		}
+
+		[Fact]
+		public async Task GetTagById_TagDoesNotExist_ShouldReturnNull()
+		{
+			//Arrange
+			_tagRepositoryMock.GetTagByIdAsync(Arg.Any<int>()).Returns(null as Tag);
+
+			//Act
+			TagDTO? expected_tag_response = await _tagService.GetTagById(1); 
+
+			//Assert
+			expected_tag_response.Should().BeNull();
+		}
+
+		[Fact]
+		public async Task GetTagById_InvalidId_ShouldReturnNull()
+		{ 
+			//Arrange
+			Tag tag = _fixture.Build<Tag>()
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>)
+				.With(temp => temp.TagId, -1)
+				.Create();
+
+			_tagRepositoryMock.GetTagByIdAsync(tag.TagId).Returns(null as Tag);
+
+			//Act
+			TagDTO? actual_tag_response = await _tagService.GetTagById(tag.TagId);
+
+			//Assert
+			actual_tag_response.Should().BeNull();
+		}
 		#endregion
 
 		#region UpdateTag
+		[Fact]
+		public async Task UpdateTag_ValidTag_ShouldUpdateTag()
+		{
+			//Arrange
+			IFormFile mockImageFile = Substitute.For<IFormFile>();
+			Tag existing_tag = _fixture.Build<Tag>()
+				.With(temp => temp.TagId, 1)
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>).Create();
+			TagAddDTO update_tag_request = _fixture.Build<TagAddDTO>()
+				.With(temp => temp.Image, mockImageFile)
+				.With(temp => temp.Icon, mockImageFile).Create();
 
+			ImageUploadResult tag_image_result = new ImageUploadResult()
+			{
+				PublicId = "test_image_public_id",
+				Url = new Uri("https://test_image_url")
+			};
+			ImageUploadResult tag_icon_result = new ImageUploadResult()
+			{
+				PublicId = "test_icon_public_id",
+				Url = new Uri("https://test_icon_url")
+			};
+
+			Tag tag_update_model = update_tag_request.ToTagFromAdd(tag_image_result, tag_icon_result);
+			TagDTO expected_tag_response = tag_update_model.ToTagDto();
+
+			_tagRepositoryMock.GetTagByIdAsync(existing_tag.TagId).Returns(existing_tag);
+			_tagRepositoryMock.GetTagByNameAsync(update_tag_request.Name).Returns(null as Tag);
+			_imageRepositoryMock.UploadImage(update_tag_request.Image!, 500, 500).Returns(tag_image_result);
+			_imageRepositoryMock.UploadImage(update_tag_request.Icon!, 100, 100).Returns(tag_icon_result);
+			_tagRepositoryMock.UpdateTagAsync(existing_tag.TagId, Arg.Any<Tag>()).Returns(tag_update_model);
+
+			//Act
+			TagDTO? actual_tag_response = await _tagService.UpdateTag(existing_tag.TagId, update_tag_request);
+			
+			//Assert
+			actual_tag_response.Should().NotBeNull();
+			actual_tag_response.Should().BeEquivalentTo(expected_tag_response);
+			actual_tag_response.Should().BeOfType<TagDTO>();
+		}
+
+		[Fact]
+		public async Task UpdateTag_DuplicateTagName_ShouldThrowArgumentException()
+		{
+			//Arrange
+			IFormFile mockImageFile = Substitute.For<IFormFile>();
+			Tag existing_tag = _fixture.Build<Tag>()
+				.With(temp => temp.TagId, 1)
+				.With(temp => temp.Name, "Nature")
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>).Create();
+			Tag duplicate_name_tag = _fixture.Build<Tag>()
+				.With(temp => temp.TagId, 2)
+				.With(temp => temp.Name, "Fitness")
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>).Create();
+			TagAddDTO update_tag_request = _fixture.Build<TagAddDTO>()
+				.With(temp => temp.Name, "Fitness")
+				.With(temp => temp.Image, mockImageFile)
+				.With(temp => temp.Icon, mockImageFile).Create();
+
+			_tagRepositoryMock.GetTagByIdAsync(existing_tag.TagId).Returns(existing_tag);
+			_tagRepositoryMock.GetTagByNameAsync(update_tag_request.Name).Returns(duplicate_name_tag);
+
+			//Action
+			var action = async () =>
+			{
+				await _tagService.UpdateTag(existing_tag.TagId, update_tag_request);
+			};
+
+			//Assert
+			await action.Should().ThrowAsync<ArgumentException>();
+		}
+
+		[Fact]
+		public async Task UpdateTag_TagNotFound_ShouldReturnNull()
+		{
+			//Arrange
+			IFormFile mockImageFile = Substitute.For<IFormFile>();
+			int update_tag_id = 0;
+			TagAddDTO update_tag_request = _fixture.Build<TagAddDTO>()
+				.With(temp => temp.Name, "Fitness")
+				.With(temp => temp.Image, mockImageFile)
+				.With(temp => temp.Icon, mockImageFile).Create();
+
+			_tagRepositoryMock.GetTagByIdAsync(update_tag_id).Returns(null as Tag);
+
+			//Action
+			TagDTO? actual_tag_response = await _tagService.UpdateTag(update_tag_id, update_tag_request);
+
+			//Assert
+			actual_tag_response.Should().BeNull();
+		}
+
+		[Fact]
+		public async Task UpdateTag_UpdateReturnsNull_ShouldReturnNull()
+		{
+			//Arrange
+			IFormFile mockImageFile = Substitute.For<IFormFile>();
+			Tag existing_tag = _fixture.Build<Tag>()
+				.With(temp => temp.TagId, 1)
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>).Create();
+			TagAddDTO update_tag_request = _fixture.Build<TagAddDTO>()
+				.With(temp => temp.Image, mockImageFile)
+				.With(temp => temp.Icon, mockImageFile).Create();
+
+			ImageUploadResult tag_image_result = new ImageUploadResult()
+			{
+				PublicId = "test_image_public_id",
+				Url = new Uri("https://test_image_url")
+			};
+			ImageUploadResult tag_icon_result = new ImageUploadResult()
+			{
+				PublicId = "test_icon_public_id",
+				Url = new Uri("https://test_icon_url")
+			};
+
+			Tag tag_update_model = update_tag_request.ToTagFromAdd(tag_image_result, tag_icon_result);
+			TagDTO expected_tag_response = tag_update_model.ToTagDto();
+
+			_tagRepositoryMock.GetTagByIdAsync(existing_tag.TagId).Returns(existing_tag);
+			_tagRepositoryMock.GetTagByNameAsync(update_tag_request.Name).Returns(null as Tag);
+			_imageRepositoryMock.UploadImage(update_tag_request.Image!, 500, 500).Returns(tag_image_result);
+			_imageRepositoryMock.UploadImage(update_tag_request.Icon!, 100, 100).Returns(tag_icon_result);
+			_tagRepositoryMock.UpdateTagAsync(existing_tag.TagId, Arg.Any<Tag>()).Returns(null as Tag);
+
+			//Act
+			TagDTO? actual_tag_response = await _tagService.UpdateTag(existing_tag.TagId, update_tag_request);
+
+			//Assert
+			actual_tag_response.Should().BeNull();
+		}
 		#endregion
 
 		#region DeleteTag
