@@ -202,13 +202,42 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		[Fact]
 		public async Task GetAllTags_RepositoryReturnsTags_ShouldReturnListOfTagDTOs()
 		{
-			
+			//Arrage
+			ICollection<Tag> tags = _fixture
+				.Build<Tag>()
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>)
+				.CreateMany(3)
+				.ToList();
+
+			_tagRepositoryMock.GetTagsAsync().Returns(tags);
+
+			ICollection<TagDTO> expected_tags_response = tags.Select(x => x.ToTagDto()).ToList();
+
+			//Act
+			ICollection<TagDTO>? actual_tags_response = await _tagService.GetAllTags();
+
+			//Assert
+			actual_tags_response.Should().NotBeEmpty();
+			actual_tags_response.Should().BeEquivalentTo(expected_tags_response);
 		}
 
 		[Fact]
 		public async Task GetAllTags_RepositoryReturnsEmptyList_ShouldReturnEmptyList()
-		{ 
-		
+		{
+			//Arrange
+			ICollection<Tag> tags = new List<Tag>();
+
+			_tagRepositoryMock.GetTagsAsync().Returns(tags);
+
+			ICollection<TagAddDTO> expected_tags_reponse = new List<TagAddDTO>();
+
+			//Act
+			ICollection<TagDTO>? actual_tags_response = await _tagService.GetAllTags();
+
+			//Assert
+			actual_tags_response.Should().NotBeNull();
+			actual_tags_response.Should().BeEmpty();
+			actual_tags_response.Should().BeEquivalentTo(expected_tags_reponse);
 		}
 		#endregion
 
