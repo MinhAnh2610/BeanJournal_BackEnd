@@ -86,17 +86,17 @@ namespace Services
     public async Task<TagDTO?> UpdateTag(int tagId, TagAddDTO tag)
     {
       var existingTag = await _tagRepository.GetTagByIdAsync(tagId);
+			if (existingTag == null)
+      {
+        return null;
+      }
 			var duplicateNameTag = await _tagRepository.GetTagByNameAsync(tag.Name);
 			if (duplicateNameTag != null && duplicateNameTag.TagId != tagId)
 			{
 				throw new ArgumentException();
 			}
-			if (existingTag == null)
-      {
-        return null;
-      }
 
-      if (!existingTag.ImagePublicId.IsNullOrEmpty())
+			if (!existingTag.ImagePublicId.IsNullOrEmpty())
       {
         await _imageRepository.DeleteByPublicId(existingTag.ImagePublicId);
       }

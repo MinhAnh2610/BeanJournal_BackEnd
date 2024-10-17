@@ -339,20 +339,59 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 
 		[Fact]
 		public async Task UpdateTag_DuplicateTagName_ShouldThrowArgumentException()
-		{ 
-		
+		{
+			//Arrange
+			IFormFile mockImageFile = Substitute.For<IFormFile>();
+			Tag existing_tag = _fixture.Build<Tag>()
+				.With(temp => temp.TagId, 1)
+				.With(temp => temp.Name, "Nature")
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>).Create();
+			Tag duplicate_name_tag = _fixture.Build<Tag>()
+				.With(temp => temp.TagId, 2)
+				.With(temp => temp.Name, "Fitness")
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>).Create();
+			TagAddDTO update_tag_request = _fixture.Build<TagAddDTO>()
+				.With(temp => temp.Name, "Fitness")
+				.With(temp => temp.Image, mockImageFile)
+				.With(temp => temp.Icon, mockImageFile).Create();
+
+			_tagRepositoryMock.GetTagByIdAsync(existing_tag.TagId).Returns(existing_tag);
+			_tagRepositoryMock.GetTagByNameAsync(update_tag_request.Name).Returns(duplicate_name_tag);
+
+			//Action
+			var action = async () =>
+			{
+				await _tagService.UpdateTag(existing_tag.TagId, update_tag_request);
+			};
+
+			//Assert
+			await action.Should().ThrowAsync<ArgumentException>();
 		}
 
 		[Fact]
 		public async Task UpdateTag_TagNotFound_ShouldReturnNull()
-		{ 
-		
+		{
+			//Arrange
+			IFormFile mockImageFile = Substitute.For<IFormFile>();
+			int update_tag_id = 0;
+			TagAddDTO update_tag_request = _fixture.Build<TagAddDTO>()
+				.With(temp => temp.Name, "Fitness")
+				.With(temp => temp.Image, mockImageFile)
+				.With(temp => temp.Icon, mockImageFile).Create();
+
+			_tagRepositoryMock.GetTagByIdAsync(update_tag_id).Returns(null as Tag);
+
+			//Action
+			TagDTO? actual_tag_response = await _tagService.UpdateTag(update_tag_id, update_tag_request);
+
+			//Assert
+			actual_tag_response.Should().BeNull();
 		}
 
 		[Fact]
 		public async Task UpdateTag_UpdateReturnsNull_ShouldReturnNull()
 		{ 
-		
+			
 		}
 		#endregion
 
