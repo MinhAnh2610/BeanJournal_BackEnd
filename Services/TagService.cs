@@ -85,11 +85,13 @@ namespace Services
 
     public async Task<TagDTO?> UpdateTag(int tagId, TagAddDTO tag)
     {
-			ArgumentNullException.ThrowIfNull(tag);
-
       var existingTag = await _tagRepository.GetTagByIdAsync(tagId);
-
-      if (existingTag == null)
+			var duplicateNameTag = await _tagRepository.GetTagByNameAsync(tag.Name);
+			if (duplicateNameTag != null && duplicateNameTag.TagId != tagId)
+			{
+				throw new ArgumentException();
+			}
+			if (existingTag == null)
       {
         return null;
       }

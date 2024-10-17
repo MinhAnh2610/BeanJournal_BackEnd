@@ -296,7 +296,64 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		#endregion
 
 		#region UpdateTag
+		[Fact]
+		public async Task UpdateTag_ValidTag_ShouldUpdateTag()
+		{
+			//Arrange
+			IFormFile mockImageFile = Substitute.For<IFormFile>();
+			Tag existing_tag = _fixture.Build<Tag>()
+				.With(temp => temp.TagId, 1)
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>).Create();
+			TagAddDTO update_tag_request = _fixture.Build<TagAddDTO>()
+				.With(temp => temp.Image, mockImageFile)
+				.With(temp => temp.Icon, mockImageFile).Create();
 
+			ImageUploadResult tag_image_result = new ImageUploadResult()
+			{
+				PublicId = "test_image_public_id",
+				Url = new Uri("https://test_image_url")
+			};
+			ImageUploadResult tag_icon_result = new ImageUploadResult()
+			{
+				PublicId = "test_icon_public_id",
+				Url = new Uri("https://test_icon_url")
+			};
+
+			Tag tag_update_model = update_tag_request.ToTagFromAdd(tag_image_result, tag_icon_result);
+			TagDTO expected_tag_response = tag_update_model.ToTagDto();
+
+			_tagRepositoryMock.GetTagByIdAsync(existing_tag.TagId).Returns(existing_tag);
+			_tagRepositoryMock.GetTagByNameAsync(update_tag_request.Name).Returns(null as Tag);
+			_imageRepositoryMock.UploadImage(update_tag_request.Image!, 500, 500).Returns(tag_image_result);
+			_imageRepositoryMock.UploadImage(update_tag_request.Icon!, 100, 100).Returns(tag_icon_result);
+			_tagRepositoryMock.UpdateTagAsync(existing_tag.TagId, Arg.Any<Tag>()).Returns(tag_update_model);
+
+			//Act
+			TagDTO? actual_tag_response = await _tagService.UpdateTag(existing_tag.TagId, update_tag_request);
+			
+			//Assert
+			actual_tag_response.Should().NotBeNull();
+			actual_tag_response.Should().BeEquivalentTo(expected_tag_response);
+			actual_tag_response.Should().BeOfType<TagDTO>();
+		}
+
+		[Fact]
+		public async Task UpdateTag_DuplicateTagName_ShouldThrowArgumentException()
+		{ 
+		
+		}
+
+		[Fact]
+		public async Task UpdateTag_TagNotFound_ShouldReturnNull()
+		{ 
+		
+		}
+
+		[Fact]
+		public async Task UpdateTag_UpdateReturnsNull_ShouldReturnNull()
+		{ 
+		
+		}
 		#endregion
 
 		#region DeleteTag
