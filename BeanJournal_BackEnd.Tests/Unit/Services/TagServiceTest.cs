@@ -265,14 +265,33 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 
 		[Fact]
 		public async Task GetTagById_TagDoesNotExist_ShouldReturnNull()
-		{ 
-		
+		{
+			//Arrange
+			_tagRepositoryMock.GetTagByIdAsync(Arg.Any<int>()).Returns(null as Tag);
+
+			//Act
+			TagDTO? expected_tag_response = await _tagService.GetTagById(1); 
+
+			//Assert
+			expected_tag_response.Should().BeNull();
 		}
 
 		[Fact]
 		public async Task GetTagById_InvalidId_ShouldReturnNull()
 		{ 
-			
+			//Arrange
+			Tag tag = _fixture.Build<Tag>()
+				.With(temp => temp.EntryTags, null as ICollection<EntryTag>)
+				.With(temp => temp.TagId, -1)
+				.Create();
+
+			_tagRepositoryMock.GetTagByIdAsync(tag.TagId).Returns(null as Tag);
+
+			//Act
+			TagDTO? actual_tag_response = await _tagService.GetTagById(tag.TagId);
+
+			//Assert
+			actual_tag_response.Should().BeNull();
 		}
 		#endregion
 
