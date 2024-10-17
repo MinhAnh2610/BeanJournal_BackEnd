@@ -77,6 +77,45 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		}
 
 		[Fact]
+		public async Task AddTag_ValidTag_ShouldCallRepositoryOnce()
+		{
+			//Arrange
+			IFormFile mockImageFile = Substitute.For<IFormFile>();
+
+			TagAddDTO tag_add_request = _fixture
+				.Build<TagAddDTO>()
+				.With(temp => temp.Name, "Nature")
+				.With(temp => temp.Image, mockImageFile)
+				.With(temp => temp.Icon, mockImageFile)
+				.Create();
+
+			ImageUploadResult tag_image_result = new ImageUploadResult()
+			{
+				PublicId = "test_image_public_id",
+				Url = new Uri("https://test_image_url")
+			};
+			ImageUploadResult tag_icon_result = new ImageUploadResult()
+			{
+				PublicId = "test_icon_public_id",
+				Url = new Uri("https://test_icon_url")
+			};
+
+			Tag expected_tag_response = tag_add_request.ToTagFromAdd(tag_image_result, tag_icon_result);
+
+			_imageRepositoryMock.UploadImage(mockImageFile, 500, 500).Returns(tag_image_result);
+			_imageRepositoryMock.UploadImage(mockImageFile, 100, 100).Returns(tag_icon_result);
+
+			_tagRepositoryMock.CreateTagAsync(Arg.Any<Tag>()).Returns(expected_tag_response);
+			_tagRepositoryMock.GetTagByNameAsync(Arg.Any<string>()).Returns((Tag?)null);
+
+			//Act
+			await _tagService.AddTag(tag_add_request);
+
+			//Assert
+			await _tagRepositoryMock.Received(1).CreateTagAsync(Arg.Any<Tag>());
+		}
+
+		[Fact]
 		public async Task AddTag_DuplicateName_ShouldThrowArgumentException()
 		{
 			//Arrange
@@ -145,7 +184,7 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 			await action.Should().ThrowAsync<ArgumentException>();
 		}
 		#endregion
-
+			
 		#region GetAllTags
 
 		#endregion
