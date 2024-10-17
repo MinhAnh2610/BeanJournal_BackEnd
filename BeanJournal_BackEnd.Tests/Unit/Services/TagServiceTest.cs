@@ -184,9 +184,32 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 			await action.Should().ThrowAsync<ArgumentException>();
 		}
 		#endregion
-			
-		#region GetAllTags
 
+		#region GetAllTags
+		[Fact]
+		public async Task GetAllTags_RepositoryReturnsNull_ShouldReturnNull()
+		{
+			//Arrange
+			_tagRepositoryMock.GetTagsAsync().Returns(null as ICollection<Tag>);
+
+			//Act
+			var actual_tags_response = await _tagService.GetAllTags();
+
+			//Assert
+			actual_tags_response.Should().BeNull();
+		}
+
+		[Fact]
+		public async Task GetAllTags_RepositoryReturnsTags_ShouldReturnListOfTagDTOs()
+		{
+			
+		}
+
+		[Fact]
+		public async Task GetAllTags_RepositoryReturnsEmptyList_ShouldReturnEmptyList()
+		{ 
+		
+		}
 		#endregion
 
 		#region GetTagById
