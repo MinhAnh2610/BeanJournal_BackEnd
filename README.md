@@ -1,7 +1,7 @@
 
-# BeanJournal
+# BeanJournal_BackEnd
 
-Welcome to the **BeanJournal** backend repository. This project is an API built using ASP.NET Core, designed to handle diary entries with features like file uploads, tagging, and image processing. The backend is deployed to Azure and utilizes Docker and SQL Server for the database, with plans for PostgreSQL support.
+Welcome to the **BeanJournal** backend repository. This project is an API built using ASP.NET Core, designed to handle diary entries with features like file uploads, tagging, and image processing. The backend utilizes Docker and SQL Server for the database, with plans for PostgreSQL support.
 
 
 ## Features
@@ -17,14 +17,14 @@ Welcome to the **BeanJournal** backend repository. This project is an API built 
 - **Swagger Documentation**: API documentation available via Swagger UI.
 
 
-## Tech Stack
+## Technologies
 
-- **.NET 6**: Core framework for building the backend.
-- **Azure Web App**: Hosting for the backend.
-- **SQL Server (Azure)**: Main database (PostgreSQL planned).
+- **.NET 8**: Core framework for building the backend.
+- **SQL Server**: Main database (PostgreSQL planned).
 - **Cloudinary**: Image storage and processing.
 - **Docker**: Containerization of the application.
 - **Redis**: Caching layer for improved performance.
+- **Serilog**: Log framework for loggging and analyzing data.
 - **JWT**: JSON Web Token for secure authentication.
 
 
@@ -32,10 +32,9 @@ Welcome to the **BeanJournal** backend repository. This project is an API built 
 
 ### Prerequisites
 
-- .NET SDK 6.0 or later
+- .NET SDK 8.0 or later
 - Docker
 - SQL Server or PostgreSQL (for local development)
-- Azure account (if deploying to Azure)
 - Redis (optional, for caching)
 
 ### Setup
@@ -53,23 +52,71 @@ Welcome to the **BeanJournal** backend repository. This project is an API built 
 3 Create a ```appsettings.json``` file in the ```BeanJournal_BackEnd``` project directory and configure your database connection strings, Cloudinary credentials, JWT settings, etc.:
 
     {
+        "AllowedHosts": "*",
+        "CloudinarySettings": {
+            "CloudName": "your_cloud_name",
+            "ApiKey": "your_api_key",
+            "ApiSecret": "your_api_secret"
+        },
         "ConnectionStrings": {
-            "DefaultConnection": "Your SQL Server or PostgreSQL connection string"
+            "DefaultConnection": "your_database_connection_string",
+            "Redis": "localhost:6379"
         },
-        "Cloudinary": {
-            "CloudName": "Your Cloudinary Cloud Name",
-            "ApiKey": "Your Cloudinary API Key",
-            "ApiSecret": "Your Cloudinary API Secret"
+        "EmailConfiguration": {
+            "From": "your_email",
+            "SmtpServer": "smtp.gmail.com",
+            "Port": your_port_number,
+            "Username": "your_username",
+            "Password": "your_password"
         },
-        "JwtSettings": {
-            "Secret": "Your JWT Secret Key",
-            "Issuer": "BeanJournal",
-            "Audience": "BeanJournalAudience"
+        "Jwt": {
+            "Issuer": "http://localhost:5246",
+            "Audience": "http://localhost:5246",
+            "Key": "your_super_secret_key",
+            "EXPIRATION_MINUTES": 10
         },
-        "Redis": {
-            "ConnectionString": "localhost:6379"
+        "Logging": {
+            "LogLevel": {
+                "Default": "Information",
+                "Microsoft.AspNetCore": "Warning",
+                "System": "Information"
+            }
+        },
+        "RefreshToken": {
+            "EXPIRATION_MINUTES": 60
+        },
+        "Serilog": {
+            "MinimumLevel": "Debug",
+            "Using": [
+                "Serilog.Sinks.Console",
+                "Serilog.Sinks.File",
+                "Serilog.Sinks.MSSqlServer"
+            ],
+            "WriteTo": [
+                {
+                    "Name": "Console"
+                },
+                {
+                    "Name": "File",
+                    "Args": {
+                        "path": "Logs/log.txt",
+                        "rollingInterval": "Hour",
+                        "fileSizeLimitBytes": 1048576,
+                        "rollOnFileSizeLimit": true
+                    }
+                },
+                {
+                    "Name": "MSSqlServer",
+                    "Args": {
+                        "connectionString": "your_log_database_connection_string",
+                        "tableName": "Logs",
+                        "autoCreateSqlTable": true
+                    }
+                }
+            ]
         }
     }
+
 4 Run the application:
 
     dotnet run
@@ -83,4 +130,4 @@ Welcome to the **BeanJournal** backend repository. This project is an API built 
 
 The API is documented using Swagger. Once the application is running, you can access the Swagger UI at:
 
-https://localhost:5001/swagger
+https://localhost:8081/swagger
