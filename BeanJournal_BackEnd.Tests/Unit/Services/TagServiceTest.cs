@@ -270,7 +270,7 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 			_tagRepositoryMock.GetTagByIdAsync(Arg.Any<int>()).Returns(null as Tag);
 
 			//Act
-			TagDTO? expected_tag_response = await _tagService.GetTagById(1); 
+			TagDTO? expected_tag_response = await _tagService.GetTagById(1);
 
 			//Assert
 			expected_tag_response.Should().BeNull();
@@ -278,7 +278,7 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 
 		[Fact]
 		public async Task GetTagById_InvalidId_ShouldReturnNull()
-		{ 
+		{
 			//Arrange
 			Tag tag = _fixture.Build<Tag>()
 				.With(temp => temp.EntryTags, null as ICollection<EntryTag>)
@@ -330,7 +330,7 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 
 			//Act
 			TagDTO? actual_tag_response = await _tagService.UpdateTag(existing_tag.TagId, update_tag_request);
-			
+
 			//Assert
 			actual_tag_response.Should().NotBeNull();
 			actual_tag_response.Should().BeEquivalentTo(expected_tag_response);
@@ -429,7 +429,102 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		#endregion
 
 		#region DeleteTag
+		[Fact]
+		public async Task DeleteTag_TagExistsAndDeleted_ShouldReturnTagDTO()
+		{
+			// Arrange
+			var tagId = 1;
+			var existing_tag = _fixture.Build<Tag>()
+															 .With(t => t.ImagePublicId, "image-public-id")
+															 .With(t => t.IconPublicId, "icon-public-id")
+															 .With(t => t.EntryTags, null as ICollection<EntryTag>)
+															 .Create();
+			var expected_deleted_tag = _fixture.Build<Tag>()
+															 .With(temp => temp.EntryTags, null as ICollection<EntryTag>)
+															 .Create();
 
+			var image_deletion_result = Substitute.For<DeletionResult>();
+
+			_tagRepositoryMock.GetTagByIdAsync(tagId).Returns(existing_tag); 
+			_imageRepositoryMock.DeleteByPublicId(existing_tag.ImagePublicId).Returns(image_deletion_result); 
+			_imageRepositoryMock.DeleteByPublicId(existing_tag.IconPublicId).Returns(image_deletion_result); 
+			_tagRepositoryMock.DeleteTagAsync(tagId).Returns(expected_deleted_tag); 
+
+			// Act
+			var actual_deleted_tag = await _tagService.DeleteTag(tagId);
+
+			// Assert
+			Assert.NotNull(actual_deleted_tag);
+			Assert.IsType<TagDTO>(actual_deleted_tag);
+			Assert.Equal(expected_deleted_tag.TagId, actual_deleted_tag.TagId);
+		}
+
+		[Fact]
+		public async Task DeleteTag_TagNotFound_ShouldReturnNull()
+		{
+			// Arrange
+			_tagRepositoryMock.GetTagByIdAsync(Arg.Any<int>()).Returns(null as Tag); // Tag not found
+
+			// Act
+			var result = await _tagService.DeleteTag(Arg.Any<int>());
+
+			// Assert
+			Assert.Null(result);
+		}
+
+		[Fact]
+		public async Task DeleteTag_TagExistsNoImageOrIcon_ShouldDeleteTagWithoutDeletingImages()
+		{
+			// Arrange
+			var tagId = 1;
+			var existing_tag = _fixture.Build<Tag>()
+															 .With(t => t.ImagePublicId, string.Empty)  
+															 .With(t => t.IconPublicId, string.Empty)   
+															 .With(t => t.EntryTags, null as ICollection<EntryTag>)
+															 .Create();
+			var expected_deleted_tag = _fixture.Build<Tag>()
+															 .With(t => t.EntryTags, null as ICollection<EntryTag>)
+															 .Create();
+
+			_tagRepositoryMock.GetTagByIdAsync(tagId).Returns(existing_tag); 
+			_tagRepositoryMock.DeleteTagAsync(tagId).Returns(existing_tag);   
+
+			// Act
+			var actual_deleted_tag = await _tagService.DeleteTag(tagId);
+
+			// Assert
+			Assert.NotNull(actual_deleted_tag);
+			Assert.IsType<TagDTO>(actual_deleted_tag);
+			Assert.Equal(existing_tag.TagId, actual_deleted_tag.TagId);
+
+			// Verify that the image deletion was not called
+			await _imageRepositoryMock.DidNotReceive().DeleteByPublicId(Arg.Any<string>());
+		}
+
+		[Fact]
+		public async Task DeleteTag_DeleteTagAsyncReturnsNull_ShouldReturnNull()
+		{
+			// Arrange
+			var tagId = 1;
+			var existing_tag = _fixture.Build<Tag>()
+															 .With(t => t.ImagePublicId, "image-public-id")
+															 .With(t => t.IconPublicId, "icon-public-id")
+															 .With(t => t.EntryTags, null as ICollection<EntryTag>)
+															 .Create();
+
+			var deletion_result = Substitute.For<DeletionResult>();
+
+			_tagRepositoryMock.GetTagByIdAsync(tagId).Returns(existing_tag); 
+			_imageRepositoryMock.DeleteByPublicId(existing_tag.ImagePublicId).Returns(deletion_result);
+			_imageRepositoryMock.DeleteByPublicId(existing_tag.IconPublicId).Returns(deletion_result);  
+			_tagRepositoryMock.DeleteTagAsync(tagId).Returns(null as Tag);  
+
+			// Act
+			var actual_delete_tag = await _tagService.DeleteTag(tagId);
+
+			// Assert
+			Assert.Null(actual_delete_tag);
+		}
 		#endregion
 	}
 }
