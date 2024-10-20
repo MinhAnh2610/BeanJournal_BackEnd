@@ -47,7 +47,6 @@ namespace Repositories
     {
       return await _context.MediaAttachments
         .Include(x => x.Entry)
-          .ThenInclude(x => x!.User)
         .ToListAsync();
     }
 
