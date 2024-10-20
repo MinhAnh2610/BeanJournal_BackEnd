@@ -181,28 +181,68 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 			// Assert
 			actual_media_response.Should().NotBeNull();
 			actual_media_response.Should().BeEquivalentTo(expected_media_response);
-			await _mediaAttachmentRepositoryMock.Received(1).GetMediaAttachmentByIdAsync(1);  
+			await _mediaAttachmentRepositoryMock.Received(1).GetMediaAttachmentByIdAsync(1);
 		}
 
-		[Fact]	
+		[Fact]
 		public async Task GetMediaAttachmentById_RepositoryReturnsNull_ShouldReturnNull()
 		{
 			// Arrange
 			_mediaAttachmentRepositoryMock
 					.GetMediaAttachmentByIdAsync(Arg.Any<int>())
-					.Returns((MediaAttachment?)null);  
+					.Returns((MediaAttachment?)null);
 
 			// Act
 			var actual_media_response = await _mediaAttachmentService.GetMediaAttachmentById(1);
 
 			// Assert
 			actual_media_response.Should().BeNull();
-			await _mediaAttachmentRepositoryMock.Received(1).GetMediaAttachmentByIdAsync(1); 
+			await _mediaAttachmentRepositoryMock.Received(1).GetMediaAttachmentByIdAsync(1);
 		}
 		#endregion
 
 		#region GetAllMediaAttachmentsByUser
+		[Fact]
+		public async Task GetAllMediaAttachmentsByUser_RepositoryReturnsMediaAttachments_ShouldReturnMediaAttachmentDTOList()
+		{
+			// Arrange
+			var userId = "user123";
+			var media_attachments_list = new List<MediaAttachment>
+		{
+				new MediaAttachment { MediaId = 1 },
+				new MediaAttachment { MediaId = 2 }
+		};
 
+			_mediaAttachmentRepositoryMock
+					.GetMediaAttachmentsByUserAsync(userId)
+					.Returns(media_attachments_list);
+
+			// Act
+			var actual_media_response = await _mediaAttachmentService.GetAllMediaAttachmentsByUser(userId);
+
+			// Assert
+			actual_media_response.Should().NotBeNull();
+			actual_media_response.Should().HaveCount(2);
+			await _mediaAttachmentRepositoryMock.Received(1).GetMediaAttachmentsByUserAsync(userId);
+		}
+
+		[Fact]
+		public async Task GetAllMediaAttachmentsByUser_RepositoryReturnsNull_ShouldReturnNull()
+		{
+			// Arrange
+			var userId = "user123";
+
+			_mediaAttachmentRepositoryMock
+					.GetMediaAttachmentsByUserAsync(userId)
+					.Returns((ICollection<MediaAttachment>?)null);  
+
+			// Act
+			var actual_media_response = await _mediaAttachmentService.GetAllMediaAttachmentsByUser(userId);
+
+			// Assert
+			actual_media_response.Should().BeNull();
+			await _mediaAttachmentRepositoryMock.Received(1).GetMediaAttachmentsByUserAsync(userId);  
+		}
 		#endregion
 
 		#region DeleteMediaAttachment
