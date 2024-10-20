@@ -246,7 +246,49 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		#endregion
 
 		#region DeleteMediaAttachment
+		[Fact]
+		public async Task DeleteMediaAttachment_RepositoryReturnsMediaAttachment_ShouldDeleteImageAndReturnMediaAttachmentDTO()
+		{
+			// Arrange
+			var media_attachment = new MediaAttachment
+			{
+				MediaId = 1,
+				PublicId = "some-public-id"
+			};
 
+			_mediaAttachmentRepositoryMock
+					.DeleteMediaAttachmentAsync(1)
+					.Returns(media_attachment);  
+
+			_imageRepositoryMock
+					.DeleteByPublicId(media_attachment.PublicId)
+					.Returns(Substitute.For<DeletionResult>());  
+
+			// Act
+			var actual_media_response = await _mediaAttachmentService.DeleteMediaAttachment(1);
+
+			// Assert
+			actual_media_response.Should().NotBeNull();  
+			await _mediaAttachmentRepositoryMock.Received(1).DeleteMediaAttachmentAsync(1);  
+			await _imageRepositoryMock.Received(1).DeleteByPublicId(media_attachment.PublicId);  
+		}
+
+		[Fact]
+		public async Task DeleteMediaAttachment_RepositoryReturnsNull_ShouldReturnNull()
+		{
+			// Arrange
+			_mediaAttachmentRepositoryMock
+					.DeleteMediaAttachmentAsync(1)
+					.Returns((MediaAttachment?)null);  
+
+			// Act
+			var actual_media_response = await _mediaAttachmentService.DeleteMediaAttachment(1);
+
+			// Assert
+			actual_media_response.Should().BeNull();
+			await _mediaAttachmentRepositoryMock.Received(1).DeleteMediaAttachmentAsync(1);  
+			await _imageRepositoryMock.DidNotReceive().DeleteByPublicId(Arg.Any<string>());  
+		}
 		#endregion
 	}
 }
