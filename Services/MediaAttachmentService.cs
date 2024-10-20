@@ -1,8 +1,4 @@
-﻿using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Entities;
-using Microsoft.Extensions.Options;
-using RepositoryContracts;
+﻿using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO.MediaAttachment;
 using ServiceContracts.Mapper;
@@ -18,48 +14,13 @@ namespace Services
   public class MediaAttachmentService : IMediaAttachmentService
   {
     private readonly IMediaAttachmentRepository _mediaAttachmentRepository;
-    private readonly IDiaryEntryRepository _entryRepository;
-    private readonly IOptions<CloudinarySettings> _config;
-    private readonly Cloudinary _cloudinary;
+    private readonly IImageRepository _imageRepository;
+
     public MediaAttachmentService(IMediaAttachmentRepository mediaAttachmentRepository,
-                                  IDiaryEntryRepository entryRepository,
-                                  IOptions<CloudinarySettings> config)
+																	IImageRepository imageRepository)
     {
-      var acc = new Account()
-      {
-        Cloud = config.Value.CloudName,
-        ApiKey = config.Value.ApiKey,
-        ApiSecret = config.Value.ApiSecret
-      };
-
       _mediaAttachmentRepository = mediaAttachmentRepository;
-      _entryRepository = entryRepository;
-      _config = config;
-      _cloudinary = new Cloudinary(acc);
-    }
-
-    public async Task<ImageUploadResult> UploadImage(MediaAttachmentAddDTO mediaAttachment)
-    {
-      var uploadResult = new ImageUploadResult();
-      if (mediaAttachment.File!.Length > 0)
-      {
-        using var stream = mediaAttachment.File.OpenReadStream();
-        var uploadParams = new ImageUploadParams
-        {
-          File = new FileDescription(mediaAttachment.File.FileName, stream),
-          Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face")
-        };
-        uploadResult = await _cloudinary.UploadAsync(uploadParams);
-      }
-      return uploadResult;
-    }
-
-    public async Task<DeletionResult> DeleteImage(string publicId)
-    {
-      var deleteParams = new DeletionParams(publicId);
-      var result = await _cloudinary.DestroyAsync(deleteParams);
-
-      return result;
+			_imageRepository = imageRepository;
     }
 
     public async Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachments()
@@ -107,7 +68,7 @@ namespace Services
       ICollection<MediaAttachmentDTO> mediaAttachmentResponses = new Collection<MediaAttachmentDTO>();
       foreach (var media in mediaAttachmentAddDtos)
       {
-        var result = await UploadImage(media);
+        var result = await _imageRepository.UploadImage(media.File!, 500, 500);
         var mediaAttachmentModel = result.ToMediaAttachmentFromAdd(entryId);
 
         var mediaAttachmentResponse = await _mediaAttachmentRepository.CreateMediaAttachmentAsync(mediaAttachmentModel);
@@ -124,7 +85,7 @@ namespace Services
       {
         return null;
       }
-      var result = await DeleteImage(mediaAttachmentResponse.PublicId);
+      var result = await _imageRepository.DeleteByPublicId(mediaAttachmentResponse.PublicId);
       return mediaAttachmentResponse.ToMediaAttachmentDto();
     }
 
@@ -152,7 +113,7 @@ namespace Services
       ICollection<MediaAttachmentDTO> mediaAttachmentResponses = new Collection<MediaAttachmentDTO>();
       foreach (var media in mediaAttachmentUpdateDTOs)
       {
-        var result = await UploadImage(media);
+        var result = await _imageRepository.UploadImage(media.File!, 500, 500);
         var mediaAttachmentModel = result.ToMediaAttachmentFromAdd(entryId);
 
         var mediaAttachmentResponse = await _mediaAttachmentRepository.CreateMediaAttachmentAsync(mediaAttachmentModel);
