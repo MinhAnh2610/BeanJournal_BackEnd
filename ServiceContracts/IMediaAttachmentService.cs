@@ -10,13 +10,11 @@ namespace ServiceContracts
 {
   public interface IMediaAttachmentService
   {
-    Task<ImageUploadResult> UploadImage(MediaAttachmentAddDTO mediaAttachment);
     Task<ICollection<MediaAttachmentDTO>?> AddMediaAttachment(List<MediaAttachmentAddDTO> mediaAttachmentAddDtos, int entryId);
     Task<ICollection<MediaAttachmentDTO>?> UpdateMediaAttachment(List<MediaAttachmentAddDTO> mediaAttachmentUpdateDTOs, int entryId);
     Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachments();
     Task<MediaAttachmentDTO?> GetMediaAttachmentById(int id);
     Task<ICollection<MediaAttachmentDTO>?> GetAllMediaAttachmentsByUser(string userId);
-    Task<DeletionResult> DeleteImage(string publicId);
     Task<MediaAttachmentDTO?> DeleteMediaAttachment(int id);
   }
 }

@@ -26,11 +26,6 @@ namespace Services.Caching
 			return await _decorator.AddMediaAttachment(mediaAttachmentAddDtos, entryId);
 		}
 
-		public Task<DeletionResult> DeleteImage(string publicId)
-		{
-			return _decorator.DeleteImage(publicId);
-		}
-
 		public async Task<MediaAttachmentDTO?> DeleteMediaAttachment(int id)
 		{
 			await _cacheService.RemoveAsync("diaries");
@@ -60,11 +55,6 @@ namespace Services.Caching
 			await _cacheService.RemoveByPrefixAsync("diary");
 
 			return await _decorator.UpdateMediaAttachment(mediaAttachmentUpdateDTOs, entryId);
-		}
-
-		public Task<ImageUploadResult> UploadImage(MediaAttachmentAddDTO mediaAttachment)
-		{
-			return _decorator.UploadImage(mediaAttachment);
 		}
 	}
 }

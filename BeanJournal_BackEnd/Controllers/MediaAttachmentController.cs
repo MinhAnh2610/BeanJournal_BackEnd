@@ -91,38 +91,6 @@ namespace BeanJournal_BackEnd.Controllers
     }
 
     /// <summary>
-    /// Testing API for uploading an image
-    /// </summary>
-    /// <param name="mediaAttachmentAddDto"></param>
-    /// <returns></returns>
-    [HttpPost("image-upload-test")]
-    public async Task<IActionResult> UploadTest([FromForm] MediaAttachmentAddDTO mediaAttachmentAddDto)
-    {
-      if (!ModelState.IsValid)
-      {
-        return BadRequest(ModelState);
-      }
-      var result = await _mediaAttachmentService.UploadImage(mediaAttachmentAddDto);
-      return Ok(result);
-    }
-
-    /// <summary>
-    /// Testing API for deleting an image
-    /// </summary>
-    /// <param name="publicId"></param>
-    /// <returns></returns>
-    [HttpDelete("image-delete-test/{publicId}")]
-    public async Task<IActionResult> DeleteTest([FromRoute] string publicId)
-    {
-      if (!ModelState.IsValid)
-      {
-        return BadRequest(ModelState);
-      }
-      var result = await _mediaAttachmentService.DeleteImage(publicId);
-      return Ok(result);
-    }
-
-    /// <summary>
     /// Upload a list of media attachments from a diary entry
     /// </summary>
     /// <param name="entryId"></param>
