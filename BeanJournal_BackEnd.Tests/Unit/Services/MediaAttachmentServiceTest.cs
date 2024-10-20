@@ -111,7 +111,7 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		{
 			// Arrange
 			var entryId = 1;
-			var media_attachments_update_list = new List<MediaAttachmentAddDTO>(); 
+			var media_attachments_update_list = new List<MediaAttachmentAddDTO>();
 
 			// Act
 			var expected_media_response = await _mediaAttachmentService.UpdateMediaAttachment(media_attachments_update_list, entryId);
@@ -119,13 +119,45 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 			// Assert
 			expected_media_response.Should().NotBeNull();
 			expected_media_response.Should().BeEmpty();
-			await _imageRepositoryMock.DidNotReceive().UploadImage(Arg.Any<IFormFile>(), 500, 500);  
-			await _mediaAttachmentRepositoryMock.DidNotReceive().CreateMediaAttachmentAsync(Arg.Any<MediaAttachment>());  
+			await _imageRepositoryMock.DidNotReceive().UploadImage(Arg.Any<IFormFile>(), 500, 500);
+			await _mediaAttachmentRepositoryMock.DidNotReceive().CreateMediaAttachmentAsync(Arg.Any<MediaAttachment>());
 		}
 		#endregion
 
 		#region GetAllMediaAttachments
+		[Fact]
+		public async Task GetAllMediaAttachments_RepositoryReturnsMediaAttachments_ShouldReturnMediaAttachmentDTOs()
+		{
+			// Arrange
+			var media_attachments_list = new List<MediaAttachment>
+		{
+				new MediaAttachment { MediaId = 1 },
+				new MediaAttachment { MediaId = 2 }
+		};
 
+			_mediaAttachmentRepositoryMock.GetMediaAttachmentsAsync().Returns(media_attachments_list);
+
+			// Act
+			var expected_media_response = await _mediaAttachmentService.GetAllMediaAttachments();
+
+			// Assert
+			expected_media_response.Should().NotBeNull().And.HaveCount(2);
+			await _mediaAttachmentRepositoryMock.Received(1).GetMediaAttachmentsAsync();
+		}
+
+		[Fact]
+		public async Task GetAllMediaAttachments_RepositoryReturnsNull_ShouldReturnNull()
+		{
+			// Arrange
+			_mediaAttachmentRepositoryMock.GetMediaAttachmentsAsync().Returns((ICollection<MediaAttachment>?)null);
+
+			// Act
+			var expected_media_response = await _mediaAttachmentService.GetAllMediaAttachments();
+
+			// Assert
+			expected_media_response.Should().BeNull();
+			await _mediaAttachmentRepositoryMock.Received(1).GetMediaAttachmentsAsync();
+		}
 		#endregion
 
 		#region GetMediaAttachmentById
