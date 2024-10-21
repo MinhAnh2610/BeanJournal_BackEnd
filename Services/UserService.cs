@@ -1,12 +1,8 @@
-﻿using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Entities;
+﻿using Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryContracts;
 using ServiceContracts;
-using ServiceContracts.DTO.Tag;
 using ServiceContracts.DTO.UserProfile;
 using ServiceContracts.Mapper;
 using System;
