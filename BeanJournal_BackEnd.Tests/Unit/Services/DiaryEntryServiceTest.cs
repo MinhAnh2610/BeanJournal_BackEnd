@@ -446,7 +446,43 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		#endregion
 
 		#region DeleteDiaryEntry
+		[Fact]
+		public async Task DeleteDiaryEntry_ValidEntryId_DeletesEntryAndTags()
+		{
+			// Arrange
+			var entryId = 1;
+			var diaryEntry = new DiaryEntry { EntryId = entryId, Title = "Test Entry" };
 
+			_entryRepositoryMock.DeleteDiaryEntryAsync(entryId)
+					.Returns(diaryEntry);  // Mock repository returning the deleted diary entry
+
+			// Act
+			var result = await _diaryEntryService.DeleteDiaryEntry(entryId);
+
+			// Assert
+			result.Should().NotBeNull();  // Ensure result is not null
+
+			await _entryRepositoryMock.Received(1).DeleteDiaryEntryAsync(entryId);  // Ensure repository delete was called
+			await _entryTagRepositoryMock.Received(1).DeleteEntryTagsAsync(entryId);  // Ensure tags deletion was called
+		}
+
+		[Fact]
+		public async Task DeleteDiaryEntry_EntryNotFound_ReturnsNull()
+		{
+			// Arrange
+			var entryId = 1;
+
+			_entryRepositoryMock.DeleteDiaryEntryAsync(entryId)
+					.Returns((DiaryEntry?)null);  // Mock repository returning null when entry doesn't exist
+
+			// Act
+			var result = await _diaryEntryService.DeleteDiaryEntry(entryId);
+
+			// Assert
+			result.Should().BeNull(); // Ensure result is null when the entry is not found
+			await _entryRepositoryMock.Received(1).DeleteDiaryEntryAsync(entryId);  // Ensure repository delete was called
+			await _entryTagRepositoryMock.DidNotReceive().DeleteEntryTagsAsync(entryId);  // No tag deletion should occur
+		}
 		#endregion
 	}
 }
