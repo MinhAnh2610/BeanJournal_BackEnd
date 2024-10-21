@@ -11,17 +11,15 @@ namespace Services
   {
     private readonly IDiaryEntryRepository _entryRepository;
     private readonly IEntryTagRepository _entryTagRepository;
-    private readonly IMediaAttachmentRepository _mediaAttachmentRepository;
     private readonly ITagRepository _tagRepository;
+
     public DiaryEntryService(IDiaryEntryRepository entryRepository, 
                              IEntryTagRepository entryTagRepository,
-                             IMediaAttachmentRepository mediaAttachmentRepository,
                              ITagRepository tagRepository)
     {
       _entryRepository = entryRepository;
       _entryTagRepository = entryTagRepository;
-      _mediaAttachmentRepository = mediaAttachmentRepository;
-      _tagRepository = tagRepository;
+			_tagRepository = tagRepository;
     }
     public async Task<DiaryEntryDTO> AddDiaryEntry(DiaryEntryAddDTO entry, string userId)
     {
