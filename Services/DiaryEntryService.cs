@@ -112,13 +112,21 @@ namespace Services
 			var existingTags = await _entryTagRepository.GetEntryTagByEntryIdAsync(entryId);
 			var newTags = entry.Tags ?? new List<int>();
 
-			var tagsToRemove = existingTags!.Where(x => !newTags.Contains(x.TagId)).ToList();
-			foreach (var tagRemove in tagsToRemove)
+			var tagsToAdd = new List<int>();
+			if (existingTags != null)
 			{
-				await _entryTagRepository.DeleteEntryTagByTagAndEntryAsync(entryId, tagRemove.TagId);
+				var tagsToRemove = existingTags!.Where(x => !newTags.Contains(x.TagId)).ToList();
+				foreach (var tagRemove in tagsToRemove)
+				{
+					await _entryTagRepository.DeleteEntryTagByTagAndEntryAsync(entryId, tagRemove.TagId);
+				}
+				tagsToAdd = newTags.Where(x => !existingTags!.Any(et => et.TagId == x)).ToList();
+			}
+			else
+			{
+				tagsToAdd = newTags.ToList();
 			}
 
-			var tagsToAdd = newTags.Where(x => !existingTags!.Any(et => et.TagId == x)).ToList();
 			foreach (var tagId in tagsToAdd)
 			{
 				var entryTagModel = new EntryTag()

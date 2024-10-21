@@ -170,23 +170,279 @@ namespace BeanJournal_BackEnd.Tests.Unit.Services
 		#endregion
 
 		#region GetAllDiaryEntries
+		[Fact]
+		public async Task GetAllDiaryEntries_ValidEntries_ReturnsDiaryEntryDTOs()
+		{
+			// Arrange
+			var diaryEntries = new List<DiaryEntry>
+		{
+				new DiaryEntry { EntryId = 1, Title = "Entry 1", Content = "Content 1", Mood = "Mood 1" },
+				new DiaryEntry { EntryId = 2, Title = "Entry 2", Content = "Content 2", Mood = "Mood 2" }
+		};
+
+			_entryRepositoryMock
+					.GetDiaryEntriesAsync()
+					.Returns(diaryEntries);  // Mock retrieving diary entries
+
+			// Act
+			var result = await _diaryEntryService.GetAllDiaryEntries();
+
+			// Assert
+			result.Should().NotBeNull();
+			result.Should().HaveCount(2);
+			await _entryRepositoryMock.Received(1).GetDiaryEntriesAsync();  // Verify that the repository was called once
+		}
+
+		[Fact]
+		public async Task GetAllDiaryEntries_NoEntriesFound_ReturnsNull()
+		{
+			// Arrange
+			_entryRepositoryMock
+					.GetDiaryEntriesAsync()
+					.Returns((ICollection<DiaryEntry>?)null);  // Mock returning null when no entries exist
+
+			// Act
+			var result = await _diaryEntryService.GetAllDiaryEntries();
+
+			// Assert
+			result.Should().BeNull();  // Verify that the result is null
+			await _entryRepositoryMock.Received(1).GetDiaryEntriesAsync();  // Verify that the repository was called once
+		}
 
 		#endregion
 
 		#region GetDiaryEntryById
+		[Fact]
+		public async Task GetDiaryEntryById_ValidId_ReturnsDiaryEntryDTO()
+		{
+			// Arrange
+			var diaryEntry = new DiaryEntry { EntryId = 1, Title = "Sample Entry", Content = "Sample Content", Mood = "Sample Mood" };
+
+			_entryRepositoryMock
+					.GetDiaryEntryByIdAsync(1)
+					.Returns(diaryEntry);  // Mock retrieving diary entry by ID
+
+			// Act
+			var result = await _diaryEntryService.GetDiaryEntryById(1);
+
+			// Assert
+			Assert.NotNull(result);
+			Assert.Equal(1, result!.EntryId);  // Verify that the entry ID is correct
+			Assert.Equal("Sample Entry", result.Title);  // Verify that the title is correct
+			await _entryRepositoryMock.Received(1).GetDiaryEntryByIdAsync(1);  // Verify that the repository was called once with the correct ID
+		}
+
+		[Fact]
+		public async Task GetDiaryEntryById_InvalidId_ReturnsNull()
+		{
+			// Arrange
+			_entryRepositoryMock
+					.GetDiaryEntryByIdAsync(2)
+					.Returns((DiaryEntry?)null);  // Mock repository returning null for invalid ID
+
+			// Act
+			var result = await _diaryEntryService.GetDiaryEntryById(2);
+
+			// Assert
+			result.Should().BeNull();  // Verify that the result is null when no entry is found
+			await _entryRepositoryMock.Received(1).GetDiaryEntryByIdAsync(2);  // Verify that the repository was called once with the correct ID
+		}
 
 		#endregion
 
 		#region GetDiaryEntryByDate
+		[Fact]
+		public async Task GetDiaryEntryByDate_ValidDate_ReturnsDiaryEntryDTO()
+		{
+			// Arrange
+			var date = new DateTime(2024, 10, 01);
+			var diaryEntry = new DiaryEntry { EntryId = 1, Title = "Sample Entry", Content = "Sample Content", CreatedAt = date };
+
+			_entryRepositoryMock
+					.GetDiaryEntryByDateAsync(date)
+					.Returns(diaryEntry);  // Mock retrieving diary entry by date
+
+			// Act
+			var result = await _diaryEntryService.GetDiaryEntryByDate(date);
+
+			// Assert
+			result.Should().NotBeNull();
+			await _entryRepositoryMock.Received(1).GetDiaryEntryByDateAsync(date);  // Ensure repository was called once
+		}
+
+		[Fact]
+		public async Task GetDiaryEntryByDate_InvalidDate_ReturnsNull()
+		{
+			// Arrange
+			var date = new DateTime(2024, 10, 02);
+
+			_entryRepositoryMock
+					.GetDiaryEntryByDateAsync(date)
+					.Returns((DiaryEntry?)null);  // Mock repository returning null for invalid date
+
+			// Act
+			var result = await _diaryEntryService.GetDiaryEntryByDate(date);
+
+			// Assert
+			result.Should().BeNull();  // Verify that the result is null when no entry is found
+			await _entryRepositoryMock.Received(1).GetDiaryEntryByDateAsync(date);  // Ensure repository was called once
+		}
 
 		#endregion
 
 		#region GetDiaryEntryByUserId
+		[Fact]
+		public async Task GetDiaryEntryByUserId_ValidUserId_ReturnsDiaryEntryDTOs()
+		{
+			// Arrange
+			var userId = "user123";
+			var diaryEntries = new List<DiaryEntry>
+		{
+				new DiaryEntry { EntryId = 1, Title = "First Entry", Content = "Content for first entry", UserId = userId },
+				new DiaryEntry { EntryId = 2, Title = "Second Entry", Content = "Content for second entry", UserId = userId }
+		};
 
+			_entryRepositoryMock
+					.GetDiaryEntriesByUserAsync(userId)
+					.Returns(diaryEntries);  // Mock retrieving diary entries for a valid user
+
+			// Act
+			var result = await _diaryEntryService.GetDiaryEntryByUserId(userId);
+
+			// Assert
+			result.Should().NotBeNull();
+			result.Should().HaveCount(2);
+			await _entryRepositoryMock.Received(1).GetDiaryEntriesByUserAsync(userId);  // Ensure repository was called once
+		}
+
+		[Fact]
+		public async Task GetDiaryEntryByUserId_InvalidUserId_ReturnsNull()
+		{
+			// Arrange
+			var userId = "user123";
+
+			_entryRepositoryMock
+					.GetDiaryEntriesByUserAsync(userId)
+					.Returns((ICollection<DiaryEntry>?)null);  // Mock repository returning null for invalid user
+
+			// Act
+			var result = await _diaryEntryService.GetDiaryEntryByUserId(userId);
+
+			// Assert
+			result.Should().BeNull();  // Verify that the result is null when no entries are found
+			await _entryRepositoryMock.Received(1).GetDiaryEntriesByUserAsync(userId);  // Ensure repository was called once
+		}
 		#endregion
 
 		#region UpdateDiaryEntry
+		[Fact]
+		public async Task UpdateDiaryEntry_ValidData_UpdatesEntryAndModifiesTags()
+		{
+			// Arrange
+			var entryId = 1;
+			var userId = "user123";
+			var entryUpdateDTO = new DiaryEntryUpdateDTO
+			{
+				Title = "Updated Title",
+				Tags = new List<int> { 1, 3 }
+			};
+			var existingTags = new List<EntryTag>
+		{
+				new EntryTag { EntryId = entryId, TagId = 1 },
+				new EntryTag { EntryId = entryId, TagId = 2 }
+		};
+			var updatedEntry = new DiaryEntry { EntryId = entryId, Title = "Updated Title", UserId = userId };
 
+			_entryRepositoryMock.UpdateDiaryEntryAsync(entryId, Arg.Any<DiaryEntry>())
+					.Returns(updatedEntry);  // Mock repository update
+
+			_entryTagRepositoryMock.GetEntryTagByEntryIdAsync(entryId)
+					.Returns(existingTags);  // Mock retrieving existing tags
+
+			// Act
+			var result = await _diaryEntryService.UpdateDiaryEntry(entryId, entryUpdateDTO, userId);
+
+			// Assert
+			result.Should().NotBeNull();  // Ensure result is not null
+			result!.Title.Should().BeEquivalentTo(updatedEntry.Title);  // Validate updated entry title
+
+			await _entryRepositoryMock.Received(1).UpdateDiaryEntryAsync(entryId, Arg.Any<DiaryEntry>());  // Ensure repository was called
+			await _entryTagRepositoryMock.Received(1).DeleteEntryTagByTagAndEntryAsync(entryId, 2);  // Verify tag was deleted
+			await _entryTagRepositoryMock.Received(1).AddEntryTagAsync(Arg.Is<EntryTag>(et => et.TagId == 3));  // Verify new tag was added
+		}
+
+		[Fact]
+		public async Task UpdateDiaryEntry_EntryNotFound_ReturnsNull()
+		{
+			// Arrange
+			var entryId = 1;
+			var userId = "user123";
+			var entryUpdateDTO = new DiaryEntryUpdateDTO { Title = "Updated Title", Tags = new List<int> { 1, 3 } };
+
+			_entryRepositoryMock.UpdateDiaryEntryAsync(entryId, Arg.Any<DiaryEntry>())
+					.Returns((DiaryEntry?)null);  // Mock repository returning null
+
+			// Act
+			var result = await _diaryEntryService.UpdateDiaryEntry(entryId, entryUpdateDTO, userId);
+
+			// Assert
+			result.Should().BeNull();  // Ensure result is null when entry is not found
+			await _entryRepositoryMock.Received(1).UpdateDiaryEntryAsync(entryId, Arg.Any<DiaryEntry>());  // Ensure repository was called
+			await _entryTagRepositoryMock.DidNotReceive().GetEntryTagByEntryIdAsync(entryId);  // No tag operations should occur
+		}
+
+		[Fact]
+		public async Task UpdateDiaryEntry_NoExistingTags_AddsNewTagsOnly()
+		{
+			// Arrange
+			var entryId = 1;
+			var userId = "user123";
+			var entryUpdateDTO = new DiaryEntryUpdateDTO { Title = "Updated Title", Tags = new List<int> { 1, 2 } };
+			var updatedEntry = new DiaryEntry { EntryId = entryId, Title = "Updated Title", UserId = userId };
+
+			_entryRepositoryMock.UpdateDiaryEntryAsync(entryId, Arg.Any<DiaryEntry>())
+					.Returns(updatedEntry);  // Mock repository update
+
+			_entryTagRepositoryMock.GetEntryTagByEntryIdAsync(entryId)
+					.Returns((ICollection<EntryTag>?)null);  // No existing tags
+
+			// Act
+			var result = await _diaryEntryService.UpdateDiaryEntry(entryId, entryUpdateDTO, userId);
+
+			// Assert
+			result.Should().NotBeNull();
+			await _entryTagRepositoryMock.Received(1).AddEntryTagAsync(Arg.Is<EntryTag>(et => et.TagId == 1));  // New tag added
+			await _entryTagRepositoryMock.Received(1).AddEntryTagAsync(Arg.Is<EntryTag>(et => et.TagId == 2));  // New tag added
+			await _entryTagRepositoryMock.DidNotReceive().DeleteEntryTagByTagAndEntryAsync(Arg.Any<int>(), Arg.Any<int>());  // No tag removal
+		}
+
+		[Fact]
+		public async Task UpdateDiaryEntry_NoTagsToAddOrRemove_NoTagOperations()
+		{
+			// Arrange
+			var entryId = 1;
+			var userId = "user123";
+			var entryUpdateDTO = new DiaryEntryUpdateDTO { Title = "Updated Title", Tags = new List<int> { 1 } };
+			var existingTags = new List<EntryTag>
+		{
+				new EntryTag { EntryId = entryId, TagId = 1 }
+		};
+			var updatedEntry = new DiaryEntry { EntryId = entryId, Title = "Updated Title", UserId = userId };
+
+			_entryRepositoryMock.UpdateDiaryEntryAsync(entryId, Arg.Any<DiaryEntry>())
+					.Returns(updatedEntry);  // Mock repository update
+
+			_entryTagRepositoryMock.GetEntryTagByEntryIdAsync(entryId)
+					.Returns(existingTags);  // Existing tags match the new tags
+
+			// Act
+			var result = await _diaryEntryService.UpdateDiaryEntry(entryId, entryUpdateDTO, userId);
+
+			// Assert
+			result.Should().NotBeNull();
+			await _entryTagRepositoryMock.DidNotReceive().DeleteEntryTagByTagAndEntryAsync(Arg.Any<int>(), Arg.Any<int>());  // No deletion
+			await _entryTagRepositoryMock.DidNotReceive().AddEntryTagAsync(Arg.Any<EntryTag>());  // No addition
+		}
 		#endregion
 
 		#region DeleteDiaryEntry
