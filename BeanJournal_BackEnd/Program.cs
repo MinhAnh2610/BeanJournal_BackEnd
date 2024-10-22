@@ -202,6 +202,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddScoped<IDiaryEntryRepository, DiaryEntryRepository>();
 builder.Services.AddScoped<IMediaAttachmentRepository, MediaAttachmentRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IEntryTagRepository, EntryTagRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
@@ -230,10 +231,9 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseCors(x => x
-		.AllowAnyMethod()
-		.AllowAnyHeader()
-		.AllowCredentials()
-		.SetIsOriginAllowed(origin => true));
+	.AllowAnyOrigin()
+	.AllowAnyMethod()
+	.AllowAnyHeader());
 
 app.UseAuthentication();
 app.UseAuthorization();

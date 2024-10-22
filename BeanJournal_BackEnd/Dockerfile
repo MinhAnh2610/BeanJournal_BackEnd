@@ -29,6 +29,7 @@ COPY ["Repositories/Repositories.csproj", "Repositories/"]
 COPY ["RepositoryContracts/RepositoryContracts.csproj", "RepositoryContracts/"]
 COPY ["ServiceContracts/ServiceContracts.csproj", "ServiceContracts/"]
 COPY ["Services/Services.csproj", "Services/"]
+COPY ["BeanJournal_BackEnd.Tests/BeanJournal_BackEnd.Tests.csproj", "BeanJournal_BackEnd.Tests/"]
 
 #Restore dependencies and packages for the Web API project
 RUN dotnet restore "./BeanJournal_BackEnd/BeanJournal_BackEnd.csproj"
