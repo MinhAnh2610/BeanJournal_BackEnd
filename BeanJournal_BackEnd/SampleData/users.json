@@ -32,22 +32,5 @@
     "LockoutEnd": null,
     "LockoutEnabled": false,
     "AccessFailedCount": 0
-  },
-  {
-    "Id": "defd8035-ca84-4013-9f1d-1ae00af310b4",
-    "UserName": "minhanh",
-    "NormalizedUserName": "MINHANH",
-    "Email": "minhanh26102004@gmail.com",
-    "NormalizedEmail": "MINHANH26102004@GMAIL.COM",
-    "EmailConfirmed": true,
-    "PasswordHash": "AQAAAAIAAYagAAAAEF1C5OJZKke9FZG7yE/6PV1UCtvpkedJLuEkNdqw0LmFDBbS0im5ogkNVaz95LlYbQ==",
-    "SecurityStamp": "7EFGZ3VVT5HYJLWQHLEWVRPUCRJZNSD7",
-    "ConcurrencyStamp": "5d73f102-7151-4b61-9ebf-06b963b8cd8b",
-    "PhoneNumber": null,
-    "PhoneNumberConfirmed": false,
-    "TwoFactorEnabled": false,
-    "LockoutEnd": null,
-    "LockoutEnabled": false,
-    "AccessFailedCount": 0
   }
 ]
