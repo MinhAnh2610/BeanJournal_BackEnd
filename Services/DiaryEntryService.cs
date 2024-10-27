@@ -26,6 +26,8 @@ namespace Services
 		{
 			var entryModel = entry.ToDiaryEntryFromAdd(userId);
 
+			var entryResponse = await _entryRepository.AddDiaryEntryAsync(entryModel);
+
 			if (entry.Tags != null)
 			{
 				foreach (var tagId in entry.Tags!)
@@ -35,15 +37,13 @@ namespace Services
 					{
 						var entryTagModel = new EntryTag()
 						{
-							Entry = entryModel,
+							Entry = entryResponse,
 							Tag = tagModel
 						};
 						await _entryTagRepository.AddEntryTagAsync(entryTagModel);
 					}
 				}
 			}
-
-			var entryResponse = await _entryRepository.AddDiaryEntryAsync(entryModel);
 
 			return entryResponse.ToDiaryEntryDto();
 		}
