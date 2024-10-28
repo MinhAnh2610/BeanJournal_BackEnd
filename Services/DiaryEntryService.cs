@@ -137,6 +137,9 @@ namespace Services
 				await _entryTagRepository.AddEntryTagAsync(entryTagModel);
 			}
 
+			var tags = await _entryTagRepository.GetEntryTagByEntryIdAsync(entryId);
+			entryResponse.EntryTags = tags;
+
 			return entryResponse.ToDiaryEntryDto();
 		}
 	}
