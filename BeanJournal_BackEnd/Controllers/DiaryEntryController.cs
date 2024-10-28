@@ -83,7 +83,7 @@ namespace BeanJournal_BackEnd.Controllers
     /// <returns></returns>
     [HttpGet]
     [Route("{id:int}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
       if (!ModelState.IsValid)
@@ -105,6 +105,7 @@ namespace BeanJournal_BackEnd.Controllers
     /// <returns></returns>
     [HttpGet]
     [Route("{date:datetime}")]
+		[Authorize]
     public async Task<IActionResult> GetByDate([FromRoute] DateTime date)
     {
       if (!ModelState.IsValid)
@@ -125,7 +126,8 @@ namespace BeanJournal_BackEnd.Controllers
     /// <param name="entryAddDto"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] DiaryEntryAddDTO entryAddDto)
+		[Authorize]
+		public async Task<IActionResult> Create([FromBody] DiaryEntryAddDTO entryAddDto)
     {
       if (!ModelState.IsValid)
       {
@@ -144,7 +146,8 @@ namespace BeanJournal_BackEnd.Controllers
     /// <param name="entryUpdateDto"></param>
     /// <returns></returns>
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] DiaryEntryUpdateDTO entryUpdateDto)
+		[Authorize]
+		public async Task<IActionResult> Update([FromRoute] int id, [FromBody] DiaryEntryUpdateDTO entryUpdateDto)
     {
       if (!ModelState.IsValid)
       {
@@ -163,7 +166,8 @@ namespace BeanJournal_BackEnd.Controllers
     /// <returns></returns>
     [HttpDelete]
     [Route("{id:int}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
+		[Authorize]
+		public async Task<IActionResult> Delete([FromRoute] int id)
     {
       if (!ModelState.IsValid)
       {
